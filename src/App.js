@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import Login from './components/Login'
+import Orders from './components/Orders'
 import './App.css';
+import OrderDetails from './components/OrderDetails';
 
 class App extends Component {
   constructor(props) {
@@ -17,13 +19,30 @@ render() {
     return (
       <Router>
         <div className="App">
-          <Route path="/" render={props =>
+          <Route exact path="/" render={props =>
             (
               <React.Fragment>
                 <Login url={this.state.url+'users/authenticate'}/>
               </React.Fragment>
             )
           } />
+            <Route exact path="/orders" 
+            render={props =>
+            (
+              <React.Fragment>
+                <Orders url={this.state.url+'orders/getallorders'} />
+              </React.Fragment>
+            )
+          } />
+           <Route exact path="/orderDetails/:id" render={props =>
+            (
+              
+              <React.Fragment>
+                <OrderDetails id={props} url={this.state.url}/>
+              </React.Fragment>
+            )
+          } />
+
 
         </div>
       </Router>

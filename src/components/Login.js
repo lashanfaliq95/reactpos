@@ -50,7 +50,6 @@ class Login extends Component {
           <AppBar
             title="Login" />
           <TextField
-           
             hintText="Enter your Username"
             floatingLabelText="Username"
             onChange={(event, newValue) => this.setState({ username: newValue })}
