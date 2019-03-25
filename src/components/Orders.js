@@ -10,9 +10,13 @@ import Order from './Order'
 import AddIcon from '@material-ui/icons/Add';
 import Fab from '@material-ui/core/Fab';
 import muiThemeable from 'material-ui/styles/muiThemeable';
+import { Button } from '@material-ui/core';
+import Logout from './logout';
+import IconButton from '@material-ui/core/IconButton';
+import AccountCircle from '@material-ui/icons/AccountCircle';
+import { withRouter } from "react-router-dom";
 
-
-export default class Orders extends Component {
+class Orders extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -21,7 +25,7 @@ export default class Orders extends Component {
   }
 
   getOrders = url => {
-    axios.get(url)
+    axios.get(url,{withCredentials: true})
      .then(res => {
        this.setState({orders:res.data});
        if (res.status === 200) {
@@ -44,6 +48,23 @@ export default class Orders extends Component {
         this.getOrders(url);
 }
 
+ logout=()=> {
+  axios('http://localhost:3000/users/logout',{
+      method: "post",
+      withCredentials: true
+    })
+  .then(res => {
+      
+      if (res.status === 200) {
+          this.props.history.push("/login");
+      }
+     
+  })
+  .catch(err => {
+      console.log(err);
+  })
+}
+
 
   render() {    
     console.log(this.state.orders);
@@ -52,7 +73,13 @@ export default class Orders extends Component {
           <MuiThemeProvider>
               <div>
           <AppBar
-            title="Orders" />
+            title="Orders" >
+             <IconButton color="inherit" aria-label="Logout" onClick={this.logout}>
+                        
+                        <AccountCircle />
+                   
+                         </IconButton>
+             </AppBar>
           <List>
         {this.state.orders.map(order=>(
            <Order order={order}/>
@@ -67,3 +94,5 @@ export default class Orders extends Component {
     )
   }
 }
+
+export default withRouter(Orders);

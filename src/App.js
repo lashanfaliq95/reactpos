@@ -4,41 +4,45 @@ import Login from './components/Login'
 import Orders from './components/Orders'
 import './App.css';
 import OrderDetails from './components/OrderDetails';
+import axios from 'axios'
 
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      url:"http://localhost:3000/"
+      url: "http://localhost:3000/"
     }
-}
-  
+  }
 
-render() {
-    
+
+
+
+
+  render() {
+
     return (
       <Router>
         <div className="App">
-          <Route exact path="/" render={props =>
+          <Route exact path="/login" render={props =>
             (
               <React.Fragment>
-                <Login url={this.state.url+'users/authenticate'}/>
+                <Login url={this.state.url + 'users/authenticate'} />
               </React.Fragment>
             )
           } />
-            <Route exact path="/orders" 
+          <Route exact path="/orders"
             render={props =>
+              (
+                <React.Fragment>
+                  <Orders url={this.state.url + 'orders/getallorders'} />
+                </React.Fragment>
+              )
+            } />
+          <Route exact path="/orderDetails/:id" render={props =>
             (
+
               <React.Fragment>
-                <Orders url={this.state.url+'orders/getallorders'} />
-              </React.Fragment>
-            )
-          } />
-           <Route exact path="/orderDetails/:id" render={props =>
-            (
-              
-              <React.Fragment>
-                <OrderDetails id={props} url={this.state.url}/>
+                <OrderDetails id={props} url={this.state.url} />
               </React.Fragment>
             )
           } />

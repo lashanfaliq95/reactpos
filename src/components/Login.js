@@ -4,6 +4,9 @@ import AppBar from 'material-ui/AppBar';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 import axios from 'axios';
+import { Redirect } from 'react-router';
+import { withRouter } from "react-router-dom";
+ import { Button } from '@material-ui/core';
 
 class Login extends Component {
   constructor(props) {
@@ -18,24 +21,31 @@ class Login extends Component {
     const url = this.props.url;
     const payload = {
       "username": this.state.username,
-      "password": this.state.password
+      "password": this.state.password,
+      "authenticated": false
     }
 
-    axios.post(url, payload)
-      .then(res => {
-        console.log(res);
-        if (res.status === 200) {
-          console.log("Login successfull")
-        }
-        else if (res.status === 204) {
-          console.log("Username password do not match");
-          alert("username password do not match")
-        }
-        else{
-          console.log("User not found");
-          alert("username password do not match")
-        }
-      })
+
+
+    axios(url, {
+      method: "post",
+      data: payload,
+      withCredentials: true
+    }).then(res => {
+      console.log(res);
+      if (res.status === 200) {
+        console.log("Login successfull");
+        this.props.history.push("/orders");
+      }
+      else if (res.status === 204) {
+        console.log("Username password do not match");
+        alert("username password do not match")
+      }
+      else {
+        console.log("User not found");
+        alert("username password do not match")
+      }
+    })
       .catch(err => {
         console.log(err);
       })
@@ -44,11 +54,15 @@ class Login extends Component {
 
   render() {
     console.log('log')
+
     return (
       <MuiThemeProvider>
         <div>
           <AppBar
-            title="Login" />
+            title="Login" >
+            <Button color="inherit">Login</Button>
+            </AppBar>
+            
           <TextField
             hintText="Enter your Username"
             floatingLabelText="Username"
@@ -73,4 +87,4 @@ const style = {
   margin: 15,
 };
 
-export default Login;
+export default withRouter(Login);

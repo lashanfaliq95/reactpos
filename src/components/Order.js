@@ -17,6 +17,7 @@ import TableRow from '@material-ui/core/TableRow';
 import TableBody from  '@material-ui/core/TableBody';
 import { Grid, GridListTile } from '@material-ui/core';
 import {Link} from 'react-router-dom';
+import { withRouter } from "react-router-dom";
 
 class Order extends Component {
   constructor(props) {
@@ -40,6 +41,7 @@ class Order extends Component {
     marginRight: theme.spacing.unit,
   },
 });
+
 
   render() {
 console.log(this.state.createdBy)
@@ -70,7 +72,7 @@ console.log(this.state.createdBy)
      <TableBody>
        <TableRow>
        <Link to= { `/orderDetails/${this.state.id}` }>
-        <TableCell>
+        <TableCell >
           <p>OrderID {this.state.id}<br/> 
           Created by {this.state.createdBy}</p>
           </TableCell>

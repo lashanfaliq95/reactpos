@@ -8,11 +8,15 @@ import List from 'material-ui/List';
 import axios from 'axios';
 import Order from './Order'
 import AddIcon from '@material-ui/icons/Add';
+import AccountCircle from '@material-ui/icons/AccountCircle';
 import Fab from '@material-ui/core/Fab';
 import { matchPath } from 'react-router'
 import Item from './Item';
 import muiThemeable from 'material-ui/styles/muiThemeable';
 import { Button } from '@material-ui/core';
+import Icon from '@material-ui/core/Icon';
+import IconButton from '@material-ui/core/IconButton';
+import { withRouter } from "react-router-dom";
 
 class OrderDetails extends Component {
 
@@ -26,7 +30,7 @@ class OrderDetails extends Component {
     }
 
     getItems = url => {
-        axios.get(url)
+        axios.get(url,{withCredentials: true})
             .then(res => {
                 console.log(res.data.items)
                 this.setState({ items: res.data.items });
@@ -48,7 +52,22 @@ class OrderDetails extends Component {
         this.setState({itemToAdd:item});
       }
       
-
+      logout=()=> {
+        axios('http://localhost:3000/users/logout',{
+            method: "post",
+            withCredentials: true
+          })
+        .then(res => {
+            
+            if (res.status === 200) {
+                this.props.history.push("/login");
+            }
+           
+        })
+        .catch(err => {
+            console.log(err);
+        })
+      }
 
     handler=(items)=>{
         this.setState({items:items})
@@ -58,7 +77,11 @@ class OrderDetails extends Component {
     addItems= ()=>{
         console.log('updated');
         const url = this.props.url +'orders/addorderitems/' + this.state.id+'/'+this.state.itemToAdd;
-        axios.put(url)
+ 
+        axios(url,{
+            method: "put",
+            withCredentials: true
+          })
         .then(res => {
             console.log(res.data.items );
             this.setState({ items: res.data.items });
@@ -89,7 +112,13 @@ class OrderDetails extends Component {
             <MuiThemeProvider>
                 <div>
                     <AppBar
-                        title="Order View" />
+                        title="Order View" >
+                         <IconButton color="inherit" aria-label="Logout" onClick={this.logout}>
+                        
+                        <AccountCircle />
+                   
+                         </IconButton>
+                         </AppBar>
                     <List>
                         {this.state.items.map(item => (
                             <Item updateurl={this.props.url+'orders/updateorderitems/'+this.state.id} 
@@ -120,4 +149,4 @@ class OrderDetails extends Component {
 
 }
 
-export default OrderDetails;
+export default withRouter(OrderDetails);

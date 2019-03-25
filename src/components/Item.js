@@ -52,26 +52,25 @@ class Item extends Component {
   updateItems = (num) => {
     const updateurl = this.props.updateurl + '/' + this.state.id;
     console.log(num);
-    axios.put(updateurl,
-      {
-        value: num
-      })
-      .then(res => {
 
+    axios(updateurl, {
+      method: "put",
+      withCredentials: true,
+      data: { value: num }
+    }).then(res => {
+      if (res.status === 200) {
+        console.log("Got orders")
+        console.log('test' + res.data.qtyonstock)
+        this.setState({
+          orderamount: res.data.orderamount,
+          qtyonstock: res.data.qtyonstock
+        });
+      }
+      else {
+        console.log("orders not found");
 
-        if (res.status === 200) {
-          console.log("Got orders")
-          console.log('test' + res.data.qtyonstock)
-          this.setState({
-            orderamount: res.data.orderamount,
-            qtyonstock: res.data.qtyonstock
-          });
-        }
-        else {
-          console.log("orders not found");
-
-        }
-      })
+      }
+    })
       .catch(err => {
         console.log(err);
       })
@@ -96,24 +95,26 @@ class Item extends Component {
     const items = this.props.items;
     console.log(items)
     const deleteUrl = this.props.deleteurl + '/' + this.state.id;
-    axios.put(deleteUrl)
-      .then(res => {
-        if (res.status === 200) {
+    axios(deleteUrl, {
+      method: "put",
+      withCredentials: true
+    }).then(res => {
+      if (res.status === 200) {
 
-          const newItems = items.filter(item => res.data._id !== item.item._id)
+        const newItems = items.filter(item => res.data._id !== item.item._id)
 
 
-          console.log(newItems)
+        console.log(newItems)
 
-          this.props.handler(newItems);
-          console.log("deleted item")
+        this.props.handler(newItems);
+        console.log("deleted item")
 
-        }
-        else {
-          console.log("deleted not found");
+      }
+      else {
+        console.log("deleted not found");
 
-        }
-      })
+      }
+    })
       .catch(err => {
         console.log(err);
       })
