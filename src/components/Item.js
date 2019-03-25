@@ -25,9 +25,24 @@ class Item extends Component {
       name: this.props.item.item.name,
       price: this.props.item.item.price,
       qtyonstock: this.props.item.item.qtyonstock,
-      orderamount: this.props.item.orderamount
+      orderamount: this.props.item.orderamount,
+      totalPrice:this.props.item.item.price*this.props.item.orderamount
     }
   }
+
+  componentDidUpdate(prevProps) {
+    if(this.props.item.item._id !==prevProps.item.item._id) {
+    this.setState({
+      id: this.props.item.item._id,
+      name: this.props.item.item.name,
+      price: this.props.item.item.price,
+      qtyonstock: this.props.item.item.qtyonstock,
+      orderamount: this.props.item.orderamount
+      
+    })
+  }
+  }
+
   toggleHover = () => {
     this.setState({ hover: !this.state.hover })
   }
@@ -47,8 +62,8 @@ class Item extends Component {
     console.log(this.state.qtyonstock)
     const newNum = number - this.state.orderamount;
     this.updateItems(newNum);
+    this.props.updatePrice(newNum*parseInt(this.state.price));
   }
-
   updateItems = (num) => {
     const updateurl = this.props.updateurl + '/' + this.state.id;
     console.log(num);
@@ -63,8 +78,10 @@ class Item extends Component {
         console.log('test' + res.data.qtyonstock)
         this.setState({
           orderamount: res.data.orderamount,
-          qtyonstock: res.data.qtyonstock
+          qtyonstock: res.data.qtyonstock,
+          totalPrice:parseInt(res.data.orderamount)*parseInt(this.state.price)
         });
+        
       }
       else {
         console.log("orders not found");
@@ -76,22 +93,12 @@ class Item extends Component {
       })
 
   }
-  containsItem = (itemid, list) => {
-
-    let i;
-    for (i = 0; i < list.length; i++) {
-      console.log('obj' + itemid)
-      console.log('id' + list[i].item._id)
-      if (itemid === list[i].item._id) {
-        return i;
-      }
-    }
-    return -1;
-  }
+  
 
 
   deleteItem = () => {
     console.log('del')
+
     const items = this.props.items;
     console.log(items)
     const deleteUrl = this.props.deleteurl + '/' + this.state.id;
@@ -101,12 +108,13 @@ class Item extends Component {
     }).then(res => {
       if (res.status === 200) {
 
-        const newItems = items.filter(item => res.data._id !== item.item._id)
+        const newItems = this.props.items.filter(item => res.data._id !== item.item._id)
 
 
-        console.log(newItems)
+        console.log(newItems);
 
         this.props.handler(newItems);
+
         console.log("deleted item")
 
       }
@@ -165,6 +173,7 @@ class Item extends Component {
                       onChange={(event, newValue) => this.updateItem(newValue)}
 
                     />
+                    <p>Price : {this.state.totalPrice}</p>
                   </TableCell>
                   <TableCell align="right">
                     <Button

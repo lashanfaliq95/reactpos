@@ -20,77 +20,77 @@ class Orders extends Component {
   constructor(props) {
     super(props);
     this.state = {
-     orders:[]
+      orders: []
     }
   }
 
   getOrders = url => {
-    axios.get(url,{withCredentials: true})
-     .then(res => {
-       this.setState({orders:res.data});
-       if (res.status === 200) {
-         console.log("Got orders")
-       }
-       else{
-         console.log("orders not found");
-         
-       }
-     })
-     .catch(err => {
-       console.log(err);
-     })
-   
-   }
+    axios.get(url, { withCredentials: true })
+      .then(res => {
+        this.setState({ orders: res.data });
+        if (res.status === 200) {
+          console.log("Got orders")
+        }
+        else {
+          console.log("orders not found");
+
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      })
+
+  }
 
   componentDidMount() {
     const url = this.props.url;
 
-        this.getOrders(url);
-}
+    this.getOrders(url);
+  }
 
- logout=()=> {
-  axios('http://localhost:3000/users/logout',{
+  logout = () => {
+    axios('http://localhost:3000/users/logout', {
       method: "post",
       withCredentials: true
     })
-  .then(res => {
-      
-      if (res.status === 200) {
+      .then(res => {
+
+        if (res.status === 200) {
           this.props.history.push("/login");
-      }
-     
-  })
-  .catch(err => {
-      console.log(err);
-  })
-}
+        }
+
+      })
+      .catch(err => {
+        console.log(err);
+      })
+  }
 
 
-  render() {    
+  render() {
     console.log(this.state.orders);
     return (
-      
-          <MuiThemeProvider>
-              <div>
+
+      <MuiThemeProvider>
+        <div>
           <AppBar
             title="Orders" >
-             <IconButton color="inherit" aria-label="Logout" onClick={this.logout}>
-                        
-                        <AccountCircle />
-                   
-                         </IconButton>
-             </AppBar>
+            <IconButton color="inherit" aria-label="Logout" onClick={this.logout}>
+
+              <AccountCircle />
+
+            </IconButton>
+          </AppBar>
           <List>
-        {this.state.orders.map(order=>(
-           <Order order={order}/>
-        )) }
+            {this.state.orders.map(order => (
+              <Order order={order} />
+            ))}
 
 
           </List>
-          
-          </div>
-          </MuiThemeProvider>
-     
+
+        </div>
+      </MuiThemeProvider>
+
     )
   }
 }

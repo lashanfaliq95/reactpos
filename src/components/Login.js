@@ -6,7 +6,7 @@ import TextField from 'material-ui/TextField';
 import axios from 'axios';
 import { Redirect } from 'react-router';
 import { withRouter } from "react-router-dom";
- import { Button } from '@material-ui/core';
+
 
 class Login extends Component {
   constructor(props) {
@@ -60,7 +60,7 @@ class Login extends Component {
         <div>
           <AppBar
             title="Login" >
-            <Button color="inherit">Login</Button>
+           
             </AppBar>
             
           <TextField
