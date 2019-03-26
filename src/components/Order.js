@@ -18,6 +18,7 @@ import TableBody from  '@material-ui/core/TableBody';
 import { Grid, GridListTile } from '@material-ui/core';
 import {Link} from 'react-router-dom';
 import { withRouter } from "react-router-dom";
+import { Button } from '@material-ui/core';
 
 class Order extends Component {
   constructor(props) {
@@ -28,6 +29,15 @@ class Order extends Component {
       status: this.props.order.status
     }
   }
+
+  componentDidUpdate(prevProps) {
+    if(this.props.order._id !==prevProps.order._id) {
+    this.setState({
+      id: this.props.order._id,
+      createdBy: this.props.order.createdby,
+    })
+  }
+}
   toggleHover = () => {
     this.setState({ hover: !this.state.hover })
   }
@@ -41,6 +51,36 @@ class Order extends Component {
     marginRight: theme.spacing.unit,
   },
 });
+updateOrder=()=>{
+  let status;
+ if(this.state.status==='open'){
+   status='close';
+  }else{
+    status='open'
+  }
+
+
+  axios('http://localhost:3000/orders/updateorder/'+this.state.id, {
+    method: "put",
+    withCredentials: true,
+    data: { status: status }
+  }).then(res => {
+    if (res.status === 200) {
+     console.log('update order');
+    
+     this.props.updateOrders(this.state.id,status);
+
+    }
+   
+  })
+    .catch(err => {
+      if(err.status===401){
+        alert('Session has timedout please login again ');
+        this.props.history.push("/login");
+      }
+      console.log(err);
+    })
+}
 
 
   render() {
@@ -81,9 +121,14 @@ console.log(this.state.createdBy)
         <h1>{this.state.status}</h1>
         </TableCell>
         <TableCell>
+        <Button
+                      name='btn'
+                      id='updOrderBtn'
+                      onClick={this.updateOrder}>
         <Fab disabled aria-label="Delete" className={this.fab}>
         <DeleteIcon />
       </Fab>
+      </Button>
       </TableCell>
         </TableRow>
         </TableBody>

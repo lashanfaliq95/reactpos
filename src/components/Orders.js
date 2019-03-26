@@ -15,15 +15,36 @@ import Logout from './logout';
 import IconButton from '@material-ui/core/IconButton';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import { withRouter } from "react-router-dom";
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
+import Typography from '@material-ui/core/Typography';
+import PropTypes from 'prop-types';
+
+
+function TabContainer(props) {
+  return (
+    <Typography component="div" style={{ padding: 8 * 3 }}>
+      {props.children}
+    </Typography>
+  );
+}
+
+TabContainer.propTypes = {
+  children: PropTypes.node.isRequired,
+};
+
+
 
 class Orders extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      orders: []
+      orders: [],
+      tabNum:0
     }
   }
 
+  
   getOrders = url => {
     axios.get(url, { withCredentials: true })
       .then(res => {
@@ -44,6 +65,21 @@ class Orders extends Component {
         console.log(err);
       })
 
+  }
+
+  updateOrders=(orderid,status)=>{
+  const updatedOrders=this.state.orders.map(
+    (order)=>{
+          if(order._id===orderid){
+            order.status=status
+          
+          }
+          return order;
+    }
+  )
+  console.log(updatedOrders)
+
+  this.setState({orders:updatedOrders})
   }
 
   componentDidMount() {
@@ -72,34 +108,62 @@ class Orders extends Component {
       })
   }
 
+  handleChange = (event, value) => {
+    this.setState({ tabNum:value });
+  };
 
   render() {
     console.log(this.state.orders);
+    const value=this.state.tabNum;
     return (
 
       <MuiThemeProvider>
         <div>
           <AppBar
             title="Orders" >
+              <Tabs value={value} onChange={this.handleChange}>
+               <Tab label="Open Orders" />
+              <Tab label="Closed Orders" />
+            </Tabs>
             <IconButton color="inherit" aria-label="Logout" onClick={this.logout}>
 
               <AccountCircle />
 
             </IconButton>
           </AppBar>
-          <List>
-            {this.state.orders.map(order => (
-              <Order order={order} />
+
+          {value === 0 && <TabContainer>
+            <List>
+            {this.state.orders.filter(
+              order=>order.status==='open'
+             )
+            .map(order => (
+              <Order order={order} updateOrders={this.updateOrders}/>
             ))}
 
 
           </List>
 
+
+
+          </TabContainer>}
+        {value === 1 && <TabContainer>
+        <List>
+        {this.state.orders.filter(
+              order=>order.status==='close'
+             )
+            .map(order => (
+              <Order order={order} updateOrders={this.updateOrders} />
+            ))}
+
+
+          </List>
+          </TabContainer>}
         </div>
       </MuiThemeProvider>
 
     )
-  }
+  } 
 }
 
 export default withRouter(Orders);

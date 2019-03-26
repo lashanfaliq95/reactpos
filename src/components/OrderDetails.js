@@ -9,6 +9,7 @@ import axios from 'axios';
 import Order from './Order'
 import AddIcon from '@material-ui/icons/Add';
 import AccountCircle from '@material-ui/icons/AccountCircle';
+import SettingBackupRestore from '@material-ui/icons/SettingsBackupRestore';
 import Fab from '@material-ui/core/Fab';
 import { matchPath } from 'react-router'
 import Item from './Item';
@@ -29,7 +30,7 @@ class OrderDetails extends Component {
             id: this.props.id.match.params.id,
             items: [],
             itemToAdd: '',
-            totalPrice:0
+            totalPrice: 0
         }
     }
 
@@ -38,10 +39,11 @@ class OrderDetails extends Component {
         axios.get(url, { withCredentials: true })
             .then(res => {
                 console.log(res.data.items)
-                this.setState({ items: res.data.items ,
-                    totalPrice:this.getPrice(res.data.items)
+                this.setState({
+                    items: res.data.items,
+                    totalPrice: this.getPrice(res.data.items)
                 });
-                
+
                 if (res.status === 200) {
                     console.log("Got orders")
                 }
@@ -51,21 +53,21 @@ class OrderDetails extends Component {
                 }
             })
             .catch(err => {
-                if(err.response.status===401){
+                if (err.response.status === 401) {
                     alert('Session has timedout please login again ');
                     this.props.history.push("/login");
-                  }
+                }
                 console.log(err);
             })
 
     }
 
-    getPrice=items=>{
+    getPrice = items => {
         console.log(items)
-        let i,sum=0,price;
-        for(i=0;i<items.length;i++){
-price=parseInt(items[i].item.price)*parseInt(items[i].orderamount);
-sum+=price;
+        let i, sum = 0, price;
+        for (i = 0; i < items.length; i++) {
+            price = parseInt(items[i].item.price) * parseInt(items[i].orderamount);
+            sum += price;
         }
         console.log(sum)
         return sum;
@@ -89,10 +91,10 @@ sum+=price;
 
             })
             .catch(err => {
-                if(err.response.status===401){
+                if (err.response.status === 401) {
                     alert('Session has timedout please login again ');
                     this.props.history.push("/login");
-                  }
+                }
                 console.log(err);
             })
     }
@@ -103,16 +105,16 @@ sum+=price;
         console.log(this.state.items)
     }
 
-    updatePrice=(newExcess)=>{
-        const price=this.state.totalPrice+newExcess
+    updatePrice = (newExcess) => {
+        const price = this.state.totalPrice + newExcess
         this.setState({ totalPrice: price })
 
     }
 
 
     containsItem = (itemid, list) => {
-console.log(list)
-console.log(itemid)
+        console.log(list)
+        console.log(itemid)
         let i;
         for (i = 0; i < list.length; i++) {
             console.log('obj' + itemid)
@@ -121,16 +123,16 @@ console.log(itemid)
                 return i;
             }
         }
-       return -1;
+        return -1;
     }
 
     addItems = () => {
         console.log('updated');
-const items=this.state.items
-const itemId=this.state.itemToAdd
-console.log(items[0])
-console.log(itemId)
-console.log(this.containsItem(itemId, items))
+        const items = this.state.items
+        const itemId = this.state.itemToAdd
+        console.log(items[0])
+        console.log(itemId)
+        console.log(this.containsItem(itemId, items))
         if (this.containsItem(itemId, items) === -1) {
             const url = this.props.url + 'orders/addorderitems/' + this.state.id + '/' + this.state.itemToAdd;
 
@@ -151,13 +153,13 @@ console.log(this.containsItem(itemId, items))
                     }
                 })
                 .catch(err => {
-                    if(err.response.status===401){
+                    if (err.response.status === 401) {
                         alert('Session has timedout please login again ');
                         this.props.history.push("/login");
-                      }
+                    }
                     console.log(err);
                 })
-        }else{
+        } else {
             alert("Item already exists")
         }
 
@@ -180,19 +182,29 @@ console.log(this.containsItem(itemId, items))
                 <div>
                     <AppBar
                         title="Order View" >
-            <Toolbar></Toolbar>
+                        <Toolbar></Toolbar>
+
+                        <IconButton color="inherit" aria-label="Logout" onClick={() => {
+                             this.props.history.push('../orders');
+                        }} >
+
+                            <SettingBackupRestore />
+
+                        </IconButton>
                         <IconButton color="inherit" aria-label="Logout" onClick={this.logout}>
 
                             <AccountCircle />
 
                         </IconButton>
+
+
                     </AppBar>
                     <List>
                         {this.state.items.map(item => (
                             <Item updateurl={this.props.url + 'orders/updateorderitems/' + this.state.id}
                                 deleteurl={this.props.url + 'orders/removeorderitems/' + this.state.id}
                                 handler={this.handler}
-                                item={item} items={this.state.items}  updatePrice={this.updatePrice}/>
+                                item={item} items={this.state.items} updatePrice={this.updatePrice} />
                         ))}
 
                     </List>
