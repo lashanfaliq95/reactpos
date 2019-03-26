@@ -9,7 +9,7 @@ import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import muiThemeable from 'material-ui/styles/muiThemeable';
-import DeleteIcon from '@material-ui/icons/Delete';
+import Https from '@material-ui/icons/Https';
 import Fab from '@material-ui/core/Fab';
 import  Table from '@material-ui/core/Table';
 import TableCell from '@material-ui/core/TableCell';
@@ -19,6 +19,7 @@ import { Grid, GridListTile } from '@material-ui/core';
 import {Link} from 'react-router-dom';
 import { withRouter } from "react-router-dom";
 import { Button } from '@material-ui/core';
+import SettingBackupRestore from '@material-ui/icons/SettingsBackupRestore';
 
 class Order extends Component {
   constructor(props) {
@@ -102,6 +103,12 @@ console.log(this.state.createdBy)
       }
     }
 
+let icon;
+    if (this.state.status==='open') {
+      icon = <Https />;
+    } else {
+      icon = <SettingBackupRestore/>;
+    }
 
     return (
       <div>
@@ -126,7 +133,7 @@ console.log(this.state.createdBy)
                       id='updOrderBtn'
                       onClick={this.updateOrder}>
         <Fab disabled aria-label="Delete" className={this.fab}>
-        <DeleteIcon />
+        {icon}
       </Fab>
       </Button>
       </TableCell>
