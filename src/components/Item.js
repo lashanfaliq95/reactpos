@@ -26,7 +26,8 @@ class Item extends Component {
       price: this.props.item.item.price,
       qtyonstock: this.props.item.item.qtyonstock,
       orderamount: this.props.item.orderamount,
-      totalPrice:this.props.item.item.price*this.props.item.orderamount
+      totalPrice:this.props.item.item.price*this.props.item.orderamount,
+      items:this.props.items
     }
   }
 
@@ -38,6 +39,12 @@ class Item extends Component {
       price: this.props.item.item.price,
       qtyonstock: this.props.item.item.qtyonstock,
       orderamount: this.props.item.orderamount
+      
+    })
+  }
+  if(this.props.items !==prevProps.items) {
+    this.setState({
+   items:this.props.items
       
     })
   }
@@ -63,7 +70,7 @@ class Item extends Component {
     const newNum = number - this.state.orderamount;
     this.updateItems(newNum);
     this.props.updatePrice(newNum*parseInt(this.state.price));
-  }
+   }
   updateItems = (num) => {
     const updateurl = this.props.updateurl + '/' + this.state.id;
     console.log(num);
@@ -81,7 +88,7 @@ class Item extends Component {
           qtyonstock: res.data.qtyonstock,
           totalPrice:parseInt(res.data.orderamount)*parseInt(this.state.price)
         });
-        
+        const newItems=this.state.items
       }
       else {
         console.log("orders not found");
@@ -89,6 +96,10 @@ class Item extends Component {
       }
     })
       .catch(err => {
+        if(err.response.status===401){
+          alert('Session has timedout please login again ');
+          this.props.history.push("/login");
+        }
         console.log(err);
       })
 
@@ -99,7 +110,7 @@ class Item extends Component {
   deleteItem = () => {
     console.log('del')
 
-    const items = this.props.items;
+    const items = this.state.items;
     console.log(items)
     const deleteUrl = this.props.deleteurl + '/' + this.state.id;
     axios(deleteUrl, {
@@ -114,6 +125,8 @@ class Item extends Component {
         console.log(newItems);
 
         this.props.handler(newItems);
+        const priceToDeduct=-parseInt(this.state.price)*parseInt(this.state.orderamount);
+        this.props.updatePrice(priceToDeduct);
 
         console.log("deleted item")
 
@@ -124,6 +137,10 @@ class Item extends Component {
       }
     })
       .catch(err => {
+        if(err.response.status===401){
+          alert('Session has timedout please login again ');
+          this.props.history.push("/login");
+        }
         console.log(err);
       })
 

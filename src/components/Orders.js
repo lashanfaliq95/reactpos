@@ -37,6 +37,10 @@ class Orders extends Component {
         }
       })
       .catch(err => {
+        if(err.response.status===401){
+          alert('Session has timedout please login again ');
+          this.props.history.push("/login");
+        }
         console.log(err);
       })
 
@@ -61,6 +65,10 @@ class Orders extends Component {
 
       })
       .catch(err => {
+        if(err.response.status===401){
+          alert('Session has timedout please login again ');
+          this.props.history.push("/login");
+        }
         console.log(err);
       })
   }

@@ -51,6 +51,10 @@ class OrderDetails extends Component {
                 }
             })
             .catch(err => {
+                if(err.response.status===401){
+                    alert('Session has timedout please login again ');
+                    this.props.history.push("/login");
+                  }
                 console.log(err);
             })
 
@@ -85,6 +89,10 @@ sum+=price;
 
             })
             .catch(err => {
+                if(err.response.status===401){
+                    alert('Session has timedout please login again ');
+                    this.props.history.push("/login");
+                  }
                 console.log(err);
             })
     }
@@ -143,6 +151,10 @@ console.log(this.containsItem(itemId, items))
                     }
                 })
                 .catch(err => {
+                    if(err.response.status===401){
+                        alert('Session has timedout please login again ');
+                        this.props.history.push("/login");
+                      }
                     console.log(err);
                 })
         }else{
