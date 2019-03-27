@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import Login from './components/Login'
 import Orders from './components/Orders'
-import './App.css';
 import OrderDetails from './components/OrderDetails';
-import axios from 'axios'
+import './App.css';
+
 
 class App extends Component {
   constructor(props) {

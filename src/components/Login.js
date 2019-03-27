@@ -1,14 +1,12 @@
 import React, { Component } from 'react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import AppBar from 'material-ui/AppBar';
-import RaisedButton from 'material-ui/RaisedButton';
-import TextField from 'material-ui/TextField';
+import {TextField,RaisedButton,AppBar} from 'material-ui';
 import axios from 'axios';
-import { Redirect } from 'react-router';
 import { withRouter } from "react-router-dom";
 
 
 class Login extends Component {
+
   constructor(props) {
     super(props);
     this.state = {

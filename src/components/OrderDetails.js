@@ -1,25 +1,11 @@
 import React, { Component } from 'react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import AppBar from 'material-ui/AppBar';
-import BottomNav from 'material-ui/BottomNavigation';
-import RaisedButton from 'material-ui/RaisedButton';
-import TextField from 'material-ui/TextField';
-import List from 'material-ui/List';
+import {TextField,List,AppBar }from 'material-ui';
 import axios from 'axios';
-import Order from './Order'
-import AddIcon from '@material-ui/icons/Add';
-import AccountCircle from '@material-ui/icons/AccountCircle';
-import SettingBackupRestore from '@material-ui/icons/SettingsBackupRestore';
-import Fab from '@material-ui/core/Fab';
-import { matchPath } from 'react-router'
+import {SettingsBackupRestore,AccountCircle,Add} from '@material-ui/icons';
 import Item from './Item';
-import muiThemeable from 'material-ui/styles/muiThemeable';
-import { Button } from '@material-ui/core';
-import Icon from '@material-ui/core/Icon';
-import IconButton from '@material-ui/core/IconButton';
 import { withRouter } from "react-router-dom";
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
+import {Toolbar,IconButton,Button,Fab} from '@material-ui/core';
 
 
 class OrderDetails extends Component {
@@ -188,7 +174,7 @@ class OrderDetails extends Component {
                              this.props.history.push('../orders');
                         }} >
 
-                            <SettingBackupRestore />
+                            <SettingsBackupRestore />
 
                         </IconButton>
                         <IconButton color="inherit" aria-label="Logout" onClick={this.logout}>
@@ -217,7 +203,7 @@ class OrderDetails extends Component {
                         id='addItemBtn'
                         onClick={this.addItems}>
                         <Fab color="primary" aria-label="Add" className={this.fab} >
-                            <AddIcon />
+                            <Add />
                         </Fab>
                     </Button>
 

@@ -1,23 +1,11 @@
 import React, { Component } from 'react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import AppBar from 'material-ui/AppBar';
-import BottomNav from 'material-ui/BottomNavigation';
-import RaisedButton from 'material-ui/RaisedButton';
-import TextField from 'material-ui/TextField';
-import List from 'material-ui/List';
+import {AppBar,List} from 'material-ui';
 import axios from 'axios';
 import Order from './Order'
-import AddIcon from '@material-ui/icons/Add';
-import Fab from '@material-ui/core/Fab';
-import muiThemeable from 'material-ui/styles/muiThemeable';
-import { Button } from '@material-ui/core';
-import Logout from './logout';
-import IconButton from '@material-ui/core/IconButton';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import { withRouter } from "react-router-dom";
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
-import Typography from '@material-ui/core/Typography';
+import {Tab, Tabs,IconButton,Typography} from '@material-ui/core';
 import PropTypes from 'prop-types';
 
 
