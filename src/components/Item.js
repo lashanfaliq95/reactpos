@@ -1,21 +1,9 @@
 import React, { Component } from 'react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import AppBar from 'material-ui/AppBar';
-import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 import axios from 'axios';
-import ListItem from '@material-ui/core/ListItem';
-import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/Card';
-import CardHeader from '@material-ui/core/CardHeader';
-import muiThemeable from 'material-ui/styles/muiThemeable';
 import DeleteIcon from '@material-ui/icons/Delete';
-import Fab from '@material-ui/core/Fab';
-import Table from '@material-ui/core/Table';
-import TableCell from '@material-ui/core/TableCell';
-import TableRow from '@material-ui/core/TableRow';
-import TableBody from '@material-ui/core/TableBody';
-import { Button } from '@material-ui/core';
+import { Button, TableBody, TableRow, TableCell, Table, Fab, ListItem } from '@material-ui/core';
 import { withRouter } from "react-router-dom";
 
 class Item extends Component {
@@ -27,44 +15,44 @@ class Item extends Component {
       price: this.props.item.item.price,
       qtyonstock: this.props.item.item.qtyonstock,
       orderamount: this.props.item.orderamount,
-      totalPrice:this.props.item.item.price*this.props.item.orderamount,
-      items:this.props.items
+      totalPrice: this.props.item.item.price * this.props.item.orderamount,
+      items: this.props.items
     }
   }
 
   containsItem = (itemid, list) => {
     console.log(list)
     console.log(itemid)
-            let i;
-            for (i = 0; i < list.length; i++) {
-                console.log('obj' + itemid)
-                console.log('id' + list[i].item._id)
-                if (itemid === list[i].item._id) {
-                    return i;
-                }
-            }
-           return -1;
-        }
+    let i;
+    for (i = 0; i < list.length; i++) {
+      console.log('obj' + itemid)
+      console.log('id' + list[i].item._id)
+      if (itemid === list[i].item._id) {
+        return i;
+      }
+    }
+    return -1;
+  }
 
 
 
   componentDidUpdate(prevProps) {
-    if(this.props.item.item._id !==prevProps.item.item._id) {
-    this.setState({
-      id: this.props.item.item._id,
-      name: this.props.item.item.name,
-      price: this.props.item.item.price,
-      qtyonstock: this.props.item.item.qtyonstock,
-      orderamount: this.props.item.orderamount,
-      totalPrice:this.props.item.item.price*this.props.item.orderamount,
-    })
-  }
-  if(this.props.items !==prevProps.items) {
-    this.setState({
-   items:this.props.items
-      
-    })
-  }
+    if (this.props.item.item._id !== prevProps.item.item._id) {
+      this.setState({
+        id: this.props.item.item._id,
+        name: this.props.item.item.name,
+        price: this.props.item.item.price,
+        qtyonstock: this.props.item.item.qtyonstock,
+        orderamount: this.props.item.orderamount,
+        totalPrice: this.props.item.item.price * this.props.item.orderamount,
+      })
+    }
+    if (this.props.items !== prevProps.items) {
+      this.setState({
+        items: this.props.items
+
+      })
+    }
   }
 
   toggleHover = () => {
@@ -86,8 +74,8 @@ class Item extends Component {
     console.log(this.state.qtyonstock)
     const newNum = number - this.state.orderamount;
     this.updateItems(newNum);
-    this.props.updatePrice(newNum*parseInt(this.state.price));
-   }
+
+  }
   updateItems = (num) => {
     const updateurl = this.props.updateurl + '/' + this.state.id;
     console.log(num);
@@ -99,22 +87,23 @@ class Item extends Component {
     }).then(res => {
       if (res.status === 200) {
         console.log("Got orders")
+        this.props.updatePrice(num * parseInt(this.state.price));
         console.log('test' + res.data.qtyonstock)
         this.setState({
           orderamount: res.data.orderamount,
           qtyonstock: res.data.qtyonstock,
-          totalPrice:parseInt(res.data.orderamount)*parseInt(this.state.price)
+          totalPrice: parseInt(res.data.orderamount) * parseInt(this.state.price)
         });
         console.log(this.state.id)
         console.log(this.state.items)
-        const index=this.containsItem(this.state.id,this.state.items);
-        const newItems=[...this.state.items]
-        console.log('ind'+index)
-        newItems[index].item.qtyonstock=this.state.qtyonstock;
-        newItems[index].orderamount=this.state.orderamount;
+        const index = this.containsItem(this.state.id, this.state.items);
+        const newItems = [...this.state.items]
+        console.log('ind' + index)
+        newItems[index].item.qtyonstock = this.state.qtyonstock;
+        newItems[index].orderamount = this.state.orderamount;
 
-       this.props.handler(newItems);
-        this.setState({items:newItems});
+        this.props.handler(newItems);
+        this.setState({ items: newItems });
       }
       else {
         console.log("orders not found");
@@ -122,7 +111,7 @@ class Item extends Component {
       }
     })
       .catch(err => {
-        if(err.status===401){
+        if (err.status === 401) {
           alert('Session has timedout please login again ');
           this.props.history.push("/login");
         }
@@ -130,8 +119,8 @@ class Item extends Component {
       })
 
   }
-  
-  
+
+
 
 
   deleteItem = () => {
@@ -145,16 +134,16 @@ class Item extends Component {
       withCredentials: true
     }).then(res => {
       if (res.status === 200) {
-
+console.log(res)  
         const newItems = this.props.items.filter(item => res.data._id !== item.item._id)
 
-
-        console.log(newItems);
+       
+    
+        const priceToDeduct = -(this.state.price * this.state.orderamount);
+        this.props.updatePrice(priceToDeduct);
 
         this.props.handler(newItems);
-        const priceToDeduct=-(parseInt(this.state.price)*parseInt(this.state.orderamount));
-        console.log(priceToDeduct)
-        this.props.updatePrice(priceToDeduct);
+      
 
         console.log("deleted item")
 
@@ -165,7 +154,7 @@ class Item extends Component {
       }
     })
       .catch(err => {
-        if(err.response.status===401){
+        if (err.status === 401) {
           alert('Session has timedout please login again ');
           this.props.history.push("/login");
         }
@@ -223,6 +212,7 @@ class Item extends Component {
                   </TableCell>
                   <TableCell align="right">
                     <Button
+                      name='delBtn'
                       id='delItemBtn'
                       onClick={this.deleteItem}>
                       <Fab disabled aria-label="Delete" className={this.fab} >
