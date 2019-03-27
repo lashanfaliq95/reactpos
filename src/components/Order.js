@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-import { Button, TableBody, TableRow, TableCell, Table, Fab, ListItem } from '@material-ui/core';
+import {TableBody, TableRow, TableCell, Table, Fab, ListItem } from '@material-ui/core';
 import { SettingsBackupRestore, Https } from '@material-ui/icons';
 
 class Order extends Component {
@@ -68,7 +68,6 @@ class Order extends Component {
 
 
   render() {
-    console.log(this.state.createdBy)
     var linkStyle;
     if (this.state.hover) {
       linkStyle = {
@@ -87,6 +86,7 @@ class Order extends Component {
     }
 
     let icon;
+    //change button based on the order status
     if (this.state.status === 'open') {
       icon = <Https />;
     } else {
@@ -101,25 +101,31 @@ class Order extends Component {
             <Table>
               <TableBody>
                 <TableRow>
-                  <Link to={`/orderDetails/${this.state.id}`}>
+                 
                     <TableCell >
+                    <Link to={`/orderDetails/${this.state.id}`}>
                       <p>OrderID {this.state.id}<br />
                         Created by {this.state.createdBy}</p>
+                        </Link>
                     </TableCell>
-                  </Link>
+                 
                   <TableCell>
                     <h1>{this.state.status}</h1>
                   </TableCell>
+
                   <TableCell>
-                    <Button
-                      name='btn'
-                      id='updOrderBtn'
-                      onClick={this.updateOrder}>
-                      <Fab disabled aria-label="Delete" className={this.fab}>
+                    
+                      <Fab 
+                        name='btn'
+                        id='updOrderBtn'
+                        onClick={this.updateOrder}
+                       aria-label="Delete" 
+                      className={this.fab}>
                         {icon}
                       </Fab>
-                    </Button>
+                   
                   </TableCell>
+
                 </TableRow>
               </TableBody>
             </Table>

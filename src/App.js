@@ -34,7 +34,7 @@ class App extends Component {
             render={props =>
               (
                 <React.Fragment>
-                  <Orders url={this.state.url + 'orders/getallorders'} />
+                  <Orders url={this.state.url } />
                 </React.Fragment>
               )
             } />

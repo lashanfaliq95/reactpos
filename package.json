@@ -9,6 +9,7 @@
     "classnames": "^2.2.6",
     "material-ui": "^0.20.2",
     "react": "^16.8.4",
+    "react-bs-notifier": "^5.0.0",
     "react-dom": "^16.8.4",
     "react-router": "^5.0.0",
     "react-router-dom": "^5.0.0",
