@@ -185,7 +185,8 @@ class Item extends Component {
                   <TableCell align="right">
                     <TextField
                       type="number"
-                      name="orderAmount"
+                      name={this.state.name}
+                      id={this.state.name}
                       defaultValue={this.state.orderamount}
                       min={0}
                       max={this.state.orderamount + this.state.qtyonstock}

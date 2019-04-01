@@ -45,7 +45,7 @@ class Order extends Component {
     }
 
 
-    axios('http://localhost:3000/orders/updateorder/' + this.state.id, {
+    axios('http://10.1.14.159:3000/orders/updateorder/' + this.state.id, {
       method: "put",  
       withCredentials: true,
       data: { status: status }
@@ -87,7 +87,7 @@ class Order extends Component {
 
     let icon;
     //change button based on the order status
-    if (this.state.status === 'open') {
+    if (this.state.status === 'OPEN') {
       icon = <Https />;
     } else {
       icon = <SettingsBackupRestore />;

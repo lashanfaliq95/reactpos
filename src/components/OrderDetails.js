@@ -14,9 +14,36 @@ class OrderDetails extends Component {
       id: this.props.id.match.params.id,
       items: [],
       itemToAdd: "",
-      totalPrice: 0
+      totalPrice: 0,
+      allItems: []
     };
   }
+
+  getAllItems = url => {
+    axios
+      .get("http://10.1.14.159:3000/items/getallitems", { withCredentials: true })
+      .then(res => {
+        console.log(res.data);
+        this.setState({
+          allItems: res.data
+        });
+
+        if (res.status === 200) {
+          console.log("Succesfully received items");
+        } else {
+          console.log("Items not found");
+        }
+      })
+      .catch(err => {
+        if (err.response) {
+          if (err.response.status === 401) {
+            alert("Session has timed out, please login again ");
+            this.props.history.push("/login");
+          }
+        }
+        console.log(err);
+      });
+  };
 
   getItems = url => {
     axios
@@ -34,9 +61,11 @@ class OrderDetails extends Component {
         }
       })
       .catch(err => {
-        if (err.response.status === 401) {
-          alert("Session has timed out, please login again ");
-          this.props.history.push("/login");
+        if (err.response) {
+          if (err.response.status === 401) {
+            alert("Session has timed out, please login again ");
+            this.props.history.push("/login");
+          }
         }
         console.log(err);
       });
@@ -59,7 +88,7 @@ class OrderDetails extends Component {
   };
 
   logout = () => {
-    axios("http://localhost:3000/users/logout", {
+    axios("http://10.1.14.159:3000/users/logout", {
       method: "post",
       withCredentials: true
     })
@@ -97,11 +126,26 @@ class OrderDetails extends Component {
     }
     return -1;
   };
+  containsAllItem = (itemid, list) => {
+    let i;
+    for (i = 0; i < list.length; i++) {
+      if (itemid === list[i]._id) {
+        return i;
+      }
+    }
+    return -1;
+  };
+
 
   addItems = () => {
     const items = this.state.items;
     const itemId = this.state.itemToAdd;
-
+    const allItems=this.state.allItems;
+    console.log(allItems)
+if(this.containsAllItem(itemId,allItems) ===-1){
+  alert("Enter valid Item Id");
+   
+  }else{
     //check if the item has already been added to the order
     if (this.containsItem(itemId, items) === -1) {
       const url =
@@ -122,25 +166,30 @@ class OrderDetails extends Component {
           }
         })
         .catch(err => {
-          if (err.response.status === 401) {
-            alert("Session has timedout please login again ");
-            this.props.history.push("/login");
+          if (err.response) {
+            if (err.response.status === 401) {
+              alert("Session has timedout please login again ");
+              this.props.history.push("/login");
+            }
           }
           console.log(err);
         });
     } else {
       alert("Item already exists");
     }
+  }
   };
 
   //when the component mounts load the items
   componentDidMount() {
     const url = this.props.url + "orders/getorder/" + this.state.id;
+    this.getAllItems();
     this.getItems(url);
+  
   }
 
   render() {
-    console.log(this.state.items)
+    console.log(this.state.items);
     return (
       <MuiThemeProvider>
         <div>
@@ -184,7 +233,7 @@ class OrderDetails extends Component {
             ))}
           </List>
 
-          <h1>TotalPrice{this.state.totalPrice}</h1>
+          <h1>Total Price : ${this.state.totalPrice} </h1>
           <TextField
             id="additem"
             onChange={(event, newValue) => this.updateItem(newValue)}
