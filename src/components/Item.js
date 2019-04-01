@@ -70,7 +70,9 @@ class Item extends Component {
   });
 
   //update item quantity
-  updateItem = number => {
+  updateItem = (event,number) => {
+    console.log(event.target.value)
+    console.log(number)
     const newNum = number - this.state.orderamount;
     this.updateItems(newNum);
   };
@@ -184,10 +186,18 @@ class Item extends Component {
                     <TextField
                       type="number"
                       name="orderAmount"
+                      defaultValue={this.state.orderamount}
                       min={0}
                       max={this.state.orderamount + this.state.qtyonstock}
                       variant="outlined"
-                      onChange={(event, newValue) => this.updateItem(newValue)}
+                      onChange={(event, newValue) => 
+                        
+                        this.updateItem(event,newValue)}
+                      onMouseUp={(event,value)=>{
+                        console.log(value)
+                        console.log(this.state.orderamount)
+                        this.defaultValue=this.state.orderamount;
+                      }}
                       inputStyle={{ backgroundColor: '#F6F5F5' }}
                     />
                     <p>Price : {this.state.totalPrice}</p>

@@ -38,15 +38,15 @@ class Order extends Component {
   });
   updateOrder = () => {
     let status;
-    if (this.state.status === 'open') {
-      status = 'close';
+    if (this.state.status === 'OPEN') {
+      status = 'CLOSE';
     } else {
-      status = 'open'
+      status = 'OPEN'
     }
 
 
     axios('http://localhost:3000/orders/updateorder/' + this.state.id, {
-      method: "put",
+      method: "put",  
       withCredentials: true,
       data: { status: status }
     }).then(res => {

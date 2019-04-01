@@ -17,8 +17,8 @@ class Login extends Component {
     const url = this.props.url;
     const payload = {
       username: this.state.username,
-      password: this.state.password,
-     };
+      password: this.state.password
+    };
 
     axios(url, {
       method: "post",
@@ -30,16 +30,23 @@ class Login extends Component {
         if (res.status === 200) {
           console.log("Login successfull");
           this.props.history.push("/orders");
-        } else if (res.status === 204) {
-          console.log("Username password do not match");
-          alert("username password do not match");
         } else {
           console.log("User not found");
           alert("username password do not match");
         }
       })
       .catch(err => {
-        console.log(err);
+        if (err.response) {
+          if (err.response.status === 401) {
+            console.log("Username password do not match");
+            alert("username password do not match");
+          } else if (err.response.status === 400) {
+            console.log("please enter necassary fields");
+            alert("Please fill the necassary fields");
+          }
+        } else {
+          alert("Make sure the server is running");
+        }
       });
   };
 
@@ -49,20 +56,25 @@ class Login extends Component {
         <div>
           <AppBar title="Login" />
           <TextField
+            m={100}
             hintText="Enter your Username"
             floatingLabelText="Username"
             onChange={(event, newValue) =>
               this.setState({ username: newValue })
-            }/><br />
+            }
+          />
+          <br />
           <TextField
             type="password"
             hintText="Enter your Password"
             floatingLabelText="Password"
             onChange={(event, newValue) =>
               this.setState({ password: newValue })
-            } /> <br />
+            }
+          />{" "}
+          <br />
           <RaisedButton
-            label="Submit"
+            label="Login"
             primary={true}
             style={style}
             onClick={event => this.authenticate(event)}

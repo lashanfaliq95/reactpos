@@ -140,6 +140,7 @@ class OrderDetails extends Component {
   }
 
   render() {
+    console.log(this.state.items)
     return (
       <MuiThemeProvider>
         <div>

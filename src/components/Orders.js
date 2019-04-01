@@ -110,7 +110,7 @@ class Orders extends Component {
             <TabContainer>
               <List>
                 {this.state.orders
-                  .filter(order => order.status === "open")
+                  .filter(order => order.status === "OPEN")
                   .map((order,i) => (
                     <Order key={i} order={order} updateOrders={this.updateOrders} />
                   ))}
@@ -121,7 +121,7 @@ class Orders extends Component {
             <TabContainer>
               <List>
                 {this.state.orders
-                  .filter(order => order.status === "close")
+                  .filter(order => order.status === "CLOSE")
                   .map((order,i) => (
                     <Order key={i} order={order} updateOrders={this.updateOrders} />
                   ))}
