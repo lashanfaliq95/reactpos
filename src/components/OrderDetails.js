@@ -1,11 +1,14 @@
 import React, { Component } from "react";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
-import { TextField, List, AppBar } from "material-ui";
+import { List, AppBar } from "material-ui";
 import axios from "axios";
-import { SettingsBackupRestore, AccountCircle, Add } from "@material-ui/icons";
+import { SettingsBackupRestore, AccountCircle } from "@material-ui/icons";
 import Item from "./Item";
+import ShowItem from "./showItem";
 import { withRouter } from "react-router-dom";
-import { Toolbar, IconButton, Fab } from "@material-ui/core";
+import { Toolbar, IconButton } from "@material-ui/core";
+import {
+  Container} from "reactstrap";
 
 class OrderDetails extends Component {
   constructor(props) {
@@ -19,13 +22,17 @@ class OrderDetails extends Component {
     };
   }
 
-  getAllItems = url => {
+  getAllItems = () => {
     axios
-      .get("http://10.1.14.159:3000/items/getallitems", { withCredentials: true })
+      .get("http://localhost:3000/items/getallitems", { withCredentials: true })
       .then(res => {
         console.log(res.data);
+        console.log(this.state.items);
+        const allItems = res.data.filter(
+          item => this.containsItem(item._id, this.state.items) === -1
+        );
         this.setState({
-          allItems: res.data
+          allItems: allItems
         });
 
         if (res.status === 200) {
@@ -53,7 +60,7 @@ class OrderDetails extends Component {
           items: res.data.items,
           totalPrice: this.getPrice(res.data.items)
         });
-
+        this.getAllItems();
         if (res.status === 200) {
           console.log("Succesfully received items");
         } else {
@@ -88,7 +95,7 @@ class OrderDetails extends Component {
   };
 
   logout = () => {
-    axios("http://10.1.14.159:3000/users/logout", {
+    axios("http://localhost:3000/users/logout", {
       method: "post",
       withCredentials: true
     })
@@ -111,6 +118,17 @@ class OrderDetails extends Component {
     this.setState({ items: newItems });
   };
 
+  handlerAllItems = itemId => {
+    //remove the item added to items from all items
+    const allItems = this.state.allItems.filter(item => itemId !== item._id);
+    this.setState({ allItems: allItems });
+  };
+
+  pushAllItems = item => {
+    let allItems = this.state.allItems;
+    allItems.push(item);
+ this.setState({ allItems: allItems });
+  };
   //function to update total price when a state change occur in an child item
   updatePrice = newExcess => {
     const price = this.state.totalPrice + newExcess;
@@ -136,63 +154,17 @@ class OrderDetails extends Component {
     return -1;
   };
 
-
-  addItems = () => {
-    const items = this.state.items;
-    const itemId = this.state.itemToAdd;
-    const allItems=this.state.allItems;
-    console.log(allItems)
-if(this.containsAllItem(itemId,allItems) ===-1){
-  alert("Enter valid Item Id");
-   
-  }else{
-    //check if the item has already been added to the order
-    if (this.containsItem(itemId, items) === -1) {
-      const url =
-        this.props.url +
-        "orders/addorderitems/" +
-        this.state.id +
-        "/" +
-        this.state.itemToAdd;
-
-      axios(url, {
-        method: "put",
-        withCredentials: true
-      })
-        .then(res => {
-          if (res.status === 200) {
-            console.log("Successfully added items to the order");
-            this.setState({ items: res.data.items });
-          }
-        })
-        .catch(err => {
-          if (err.response) {
-            if (err.response.status === 401) {
-              alert("Session has timedout please login again ");
-              this.props.history.push("/login");
-            }
-          }
-          console.log(err);
-        });
-    } else {
-      alert("Item already exists");
-    }
-  }
-  };
-
   //when the component mounts load the items
-  componentDidMount() {
+  async componentDidMount() {
     const url = this.props.url + "orders/getorder/" + this.state.id;
-    this.getAllItems();
-    this.getItems(url);
-  
+    await this.getItems(url);
+    await this.getAllItems();
   }
 
   render() {
-    console.log(this.state.items);
     return (
       <MuiThemeProvider>
-        <div>
+        <Container>
           <AppBar title="Order View">
             <Toolbar />
 
@@ -214,41 +186,63 @@ if(this.containsAllItem(itemId,allItems) ===-1){
               <AccountCircle />
             </IconButton>
           </AppBar>
-
-          <List>
-            {this.state.items.map((item, i) => (
-              <Item
-                key={i}
-                updateurl={
-                  this.props.url + "orders/updateorderitems/" + this.state.id
-                }
-                deleteurl={
-                  this.props.url + "orders/removeorderitems/" + this.state.id
-                }
-                handler={this.handler}
-                item={item}
-                items={this.state.items}
-                updatePrice={this.updatePrice}
-              />
-            ))}
-          </List>
-
-          <h1>Total Price : ${this.state.totalPrice} </h1>
-          <TextField
-            id="additem"
-            onChange={(event, newValue) => this.updateItem(newValue)}
-          />
-
-          <Fab
-            id="addItemBtn"
-            onClick={this.addItems}
-            color="primary"
-            aria-label="Add"
-            className={this.fab}
+          <Container
+            style={{
+              position: "absolute",
+              width: "50%"
+            }}
           >
-            <Add />
-          </Fab>
-        </div>
+            <div>
+              <List>
+                {this.state.items.map((item, i) => (
+                  <Item
+                    key={i}
+                    updateurl={
+                      this.props.url +
+                      "orders/updateorderitems/" +
+                      this.state.id
+                    }
+                    deleteurl={
+                      this.props.url +
+                      "orders/removeorderitems/" +
+                      this.state.id
+                    }
+                    handler={this.handler}
+                    item={item}
+                    items={this.state.items}
+                    updatePrice={this.updatePrice}
+                    handlerAllItems={this.pushAllItems}
+                  />
+                ))}
+              </List>
+
+              <h1>Total Price : ${this.state.totalPrice} </h1>
+            </div>
+          </Container>
+          <Container
+            style={{
+              position: "absolute",
+              width: "45%",
+              marginLeft: "52%",
+              padding: 20
+            }}
+          >
+            <h1>Item List</h1>
+
+            <List>
+              {this.state.allItems.map((item, i) => (
+                <ShowItem
+                  key={i}
+                  item={item}
+                  orderId={this.state.id}
+                  handler={this.handler}
+                  url={this.props.url}
+                  handlerAllItems={this.handlerAllItems}
+                />
+              ))}
+            </List>
+          </Container>
+        </Container>
       </MuiThemeProvider>
     );
   }

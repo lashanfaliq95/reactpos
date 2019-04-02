@@ -10,7 +10,7 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      url: "http://10.1.14.159:3000/"
+      url: "http://localhost:3000/"
     }
   }
 

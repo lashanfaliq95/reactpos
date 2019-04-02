@@ -45,7 +45,7 @@ class Order extends Component {
     }
 
 
-    axios('http://10.1.14.159:3000/orders/updateorder/' + this.state.id, {
+    axios('http://localhost:3000/orders/updateorder/' + this.state.id, {
       method: "put",  
       withCredentials: true,
       data: { status: status }

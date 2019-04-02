@@ -126,6 +126,7 @@ class Item extends Component {
         if (res.status === 200) {
           console.log("Item has been deleted succesfully");
           //remove the deleted item from the items array
+          console.log(res.data)
           const newItems = this.props.items.filter(
             item => res.data._id !== item.item._id
           );
@@ -136,6 +137,7 @@ class Item extends Component {
 
           //update the items array of parent component
           this.props.handler(newItems);
+          this.props.handlerAllItems(res.data);
         }
       })
       .catch(err => {

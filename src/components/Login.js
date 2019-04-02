@@ -3,6 +3,24 @@ import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import { TextField, RaisedButton, AppBar } from "material-ui";
 import axios from "axios";
 import { withRouter } from "react-router-dom";
+import {
+  Container,
+  Row,
+  Col,
+  Navbar,
+  NavbarToggler,
+  NavbarBrand,
+  Nav,
+  NavItem,
+  NavLink,
+  Button,
+  Form,
+  FormGroup,
+  Label,
+  Input,
+  FormText,InputGroup, InputGroupAddon, InputGroupText
+} from "reactstrap";
+import { colors } from "material-ui/styles";
 
 class Login extends Component {
   constructor(props) {
@@ -81,11 +99,73 @@ class Login extends Component {
           />
         </div>
       </MuiThemeProvider>
+      // <Container>
+      //   <Navbar
+      //     light
+      //     style={{
+      //       backgroundColor: "#E16740",
+      //       height: "auto",
+      //       fontSize: 30,
+      //       textAlign: "center",
+      //       padding: 10
+      //     }}
+      //     expand="md"
+      //   >
+      //     <NavbarBrand
+      //       style={{
+      //         padding: 20
+      //       }}
+      //     >
+      //       Login
+      //     </NavbarBrand>
+      //   </Navbar>
+      //   <MuiThemeProvider>
+      //     <Container style={{
+      //       marginTop:200
+      //     }}>
+      //     <Form>
+      //    <Col>
+      //       <FormGroup>
+      //         <Label>Email</Label>
+      //         <Input
+      //           type="email"
+      //           name="email"
+      //           id="exampleEmail"
+      //           placeholder="myemail@email.com"
+      //         />
+      //       </FormGroup>
+      //     </Col>
+      //     </Form>
+      // <br />
+      //     <TextField
+      //       type="password"
+      //       hintText="Enter your Password"
+      //       floatingLabelText="Password"
+      //       onChange={(event, newValue) =>
+      //         this.setState({ password: newValue })
+      //       }
+      //     />{" "}
+      //     <br />
+      //     {/* <Button
+      //       label="Login"
+      //       secondary={true}
+      //       style={style}
+           
+      //     /> */}
+      //     <Button color="primary" size="lg"
+      //      onClick={event => this.authenticate(event)}
+      //      margin="15px">Large Button</Button>
+      //     </Container>
+        
+      //     </MuiThemeProvider>
+      // </Container>
     );
   }
 }
 const style = {
-  margin: 15
+  margin: 15,
+  backgroundColor: "#E16740",
+  size:"lg"
 };
 
 export default withRouter(Login);
