@@ -7,6 +7,7 @@ import AccountCircle from "@material-ui/icons/AccountCircle";
 import { withRouter } from "react-router-dom";
 import { Tab, Tabs, IconButton, Typography } from "@material-ui/core";
 import PropTypes from "prop-types";
+import { Popover, PopoverHeader } from "reactstrap";
 
 function TabContainer(props) {
   return (
@@ -25,9 +26,17 @@ class Orders extends Component {
     super(props);
     this.state = {
       orders: [],
-      tabNum: 0
+      tabNum: 0,
+      popoverOpen: false
     };
   }
+
+  //to open the popover to logout
+  toggle = () => {
+    this.setState({
+      popoverOpen: !this.state.popoverOpen
+    });
+  };
 
   getOrders = url => {
     axios
@@ -97,13 +106,17 @@ class Orders extends Component {
               <Tab label="Open Orders" />
               <Tab label="Closed Orders" />
             </Tabs>
-            <IconButton
-              color="inherit"
-              aria-label="Logout"
-              onClick={this.logout}
-            >
+            <IconButton color="inherit" aria-label="Logout" id="Popover1">
               <AccountCircle />
             </IconButton>
+            <Popover
+              placement="bottom"
+              isOpen={this.state.popoverOpen}
+              target="Popover1"
+              toggle={this.toggle}
+            >
+              <PopoverHeader onClick={this.logout}>Logout</PopoverHeader>
+            </Popover>
           </AppBar>
 
           {value === 0 && (
@@ -111,8 +124,12 @@ class Orders extends Component {
               <List>
                 {this.state.orders
                   .filter(order => order.status === "OPEN")
-                  .map((order,i) => (
-                    <Order key={i} order={order} updateOrders={this.updateOrders} />
+                  .map((order, i) => (
+                    <Order
+                      key={i}
+                      order={order}
+                      updateOrders={this.updateOrders}
+                    />
                   ))}
               </List>
             </TabContainer>
@@ -122,8 +139,12 @@ class Orders extends Component {
               <List>
                 {this.state.orders
                   .filter(order => order.status === "CLOSE")
-                  .map((order,i) => (
-                    <Order key={i} order={order} updateOrders={this.updateOrders} />
+                  .map((order, i) => (
+                    <Order
+                      key={i}
+                      order={order}
+                      updateOrders={this.updateOrders}
+                    />
                   ))}
               </List>
             </TabContainer>

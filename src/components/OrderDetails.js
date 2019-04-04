@@ -7,8 +7,17 @@ import Item from "./Item";
 import ShowItem from "./showItem";
 import { withRouter } from "react-router-dom";
 import { Toolbar, IconButton } from "@material-ui/core";
+import { Container } from "reactstrap";
 import {
-  Container} from "reactstrap";
+  ListGroup,
+  ListGroupItem,
+  ListGroupItemHeading,
+  ListGroupItemText,
+  Badge,
+  Popover,
+  PopoverHeader,
+  PopoverBody
+} from "reactstrap";
 
 class OrderDetails extends Component {
   constructor(props) {
@@ -18,21 +27,40 @@ class OrderDetails extends Component {
       items: [],
       itemToAdd: "",
       totalPrice: 0,
-      allItems: []
+      allItems: [],
+      popoverOpen: false
     };
   }
+
+  //to open the popover to logout
+  toggle = () => {
+    this.setState({
+      popoverOpen: !this.state.popoverOpen
+    });
+  };
 
   getAllItems = () => {
     axios
       .get("http://localhost:3000/items/getallitems", { withCredentials: true })
       .then(res => {
-        console.log(res.data);
-        console.log(this.state.items);
-        const allItems = res.data.filter(
+       const allItems = res.data.filter(
           item => this.containsItem(item._id, this.state.items) === -1
         );
+        let allItemsNew = [];
+
+        //find which items are already in order
+        res.data.map(item => {
+          let added = false;
+          this.state.items.map(addedItem => {
+            if (item._id === addedItem.item._id) {
+              added = true;
+            }
+          });
+          allItemsNew.push({ item: item, added: added });
+        });
+
         this.setState({
-          allItems: allItems
+          allItems: allItemsNew
         });
 
         if (res.status === 200) {
@@ -60,7 +88,7 @@ class OrderDetails extends Component {
           items: res.data.items,
           totalPrice: this.getPrice(res.data.items)
         });
-        this.getAllItems();
+
         if (res.status === 200) {
           console.log("Succesfully received items");
         } else {
@@ -120,14 +148,23 @@ class OrderDetails extends Component {
 
   handlerAllItems = itemId => {
     //remove the item added to items from all items
-    const allItems = this.state.allItems.filter(item => itemId !== item._id);
+    const allItems = this.state.allItems.map(item => {
+      if (itemId === item.item._id) {
+        item.added = true;
+      }
+      return item;
+    });
     this.setState({ allItems: allItems });
   };
 
-  pushAllItems = item => {
-    let allItems = this.state.allItems;
-    allItems.push(item);
- this.setState({ allItems: allItems });
+  pushAllItems = itemId => {
+    const allItems = this.state.allItems.map(item => {
+      if (itemId === item.item._id) {
+        item.added = false;
+      }
+      return item;
+    });
+    this.setState({ allItems: allItems });
   };
   //function to update total price when a state change occur in an child item
   updatePrice = newExcess => {
@@ -164,7 +201,7 @@ class OrderDetails extends Component {
   render() {
     return (
       <MuiThemeProvider>
-        <Container>
+        <div>
           <AppBar title="Order View">
             <Toolbar />
 
@@ -178,22 +215,26 @@ class OrderDetails extends Component {
               <SettingsBackupRestore />
             </IconButton>
 
-            <IconButton
-              color="inherit"
-              aria-label="Logout"
-              onClick={this.logout}
-            >
+            <IconButton color="inherit" aria-label="Logout" id="Popover1">
               <AccountCircle />
             </IconButton>
+            <Popover
+              placement="bottom"
+              isOpen={this.state.popoverOpen}
+              target="Popover1"
+              toggle={this.toggle}
+            >
+              <PopoverHeader onClick={this.logout}>Logout</PopoverHeader>
+            </Popover>
           </AppBar>
           <Container
             style={{
               position: "absolute",
-              width: "50%"
+              width: "70%"
             }}
           >
             <div>
-              <List>
+              <ListGroup>
                 {this.state.items.map((item, i) => (
                   <Item
                     key={i}
@@ -214,22 +255,24 @@ class OrderDetails extends Component {
                     handlerAllItems={this.pushAllItems}
                   />
                 ))}
-              </List>
-
-              <h1>Total Price : ${this.state.totalPrice} </h1>
+              </ListGroup>
+              <Badge color="primary">
+                {" "}
+                <h1>Total Price : ${this.state.totalPrice} </h1>
+              </Badge>
             </div>
           </Container>
           <Container
             style={{
               position: "absolute",
-              width: "45%",
-              marginLeft: "52%",
+              width: "30%",
+              marginLeft: "65%",
               padding: 20
             }}
           >
             <h1>Item List</h1>
 
-            <List>
+            <ListGroup>
               {this.state.allItems.map((item, i) => (
                 <ShowItem
                   key={i}
@@ -240,9 +283,9 @@ class OrderDetails extends Component {
                   handlerAllItems={this.handlerAllItems}
                 />
               ))}
-            </List>
+            </ListGroup>
           </Container>
-        </Container>
+        </div>
       </MuiThemeProvider>
     );
   }

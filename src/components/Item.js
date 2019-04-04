@@ -12,7 +12,15 @@ import {
   ListItem
 } from "@material-ui/core";
 import { withRouter } from "react-router-dom";
-
+import {
+  ListGroup,
+  ListGroupItem,
+  ListGroupItemHeading,
+  ListGroupItemText,
+  Row,
+  Col,
+  Badge
+} from "reactstrap";
 class Item extends Component {
   constructor(props) {
     super(props);
@@ -70,9 +78,7 @@ class Item extends Component {
   });
 
   //update item quantity
-  updateItem = (event,number) => {
-    console.log(event.target.value)
-    console.log(number)
+  updateItem = (event, number) => {
     const newNum = number - this.state.orderamount;
     this.updateItems(newNum);
   };
@@ -112,6 +118,9 @@ class Item extends Component {
           alert("Session has timedout please login again ");
           this.props.history.push("/login");
         }
+        if (err.response.status === 400) {
+          alert("Session has timedout please login again ");
+        }
         console.log(err);
       });
   };
@@ -126,7 +135,7 @@ class Item extends Component {
         if (res.status === 200) {
           console.log("Item has been deleted succesfully");
           //remove the deleted item from the items array
-          console.log(res.data)
+          console.log(res.data);
           const newItems = this.props.items.filter(
             item => res.data._id !== item.item._id
           );
@@ -137,7 +146,7 @@ class Item extends Component {
 
           //update the items array of parent component
           this.props.handler(newItems);
-          this.props.handlerAllItems(res.data);
+          this.props.handlerAllItems(res.data._id);
         }
       })
       .catch(err => {
@@ -169,60 +178,56 @@ class Item extends Component {
     return (
       <div>
         <MuiThemeProvider>
-          <ListItem
+          <ListGroupItem
             onMouseEnter={this.toggleHover}
             onMouseLeave={this.toggleHover}
             style={linkStyle}
           >
-            <Table>
-              <TableBody>
-                <TableRow>
-                  <TableCell>
-                    <h1>{this.state.name}</h1>
-                    <p>price {this.state.price}</p>
-                    <p>orderamount {this.state.orderamount}</p>
-                    <p>qtyonstock {this.state.qtyonstock}</p>
-                  </TableCell>
+            <Row>
+            <Col>
+            <h1> {this.state.name}</h1>
+              <br/>
+              <p>Unit Price:{this.state.price}</p>
+              </Col>
+              <Col>
 
-                  <TableCell align="right">
-                    <TextField
-                      type="number"
-                      name={this.state.name}
-                      id={this.state.name}
-                      defaultValue={this.state.orderamount}
-                      min={0}
-                      max={this.state.orderamount + this.state.qtyonstock}
-                      variant="outlined"
-                      onChange={(event, newValue) => 
-                        
-                        this.updateItem(event,newValue)}
-                      onMouseUp={(event,value)=>{
-                        console.log(value)
-                        console.log(this.state.orderamount)
-                        this.defaultValue=this.state.orderamount;
-                      }}
-                      inputStyle={{ backgroundColor: '#F6F5F5' }}
-                    />
-                    <p>Price : {this.state.totalPrice}</p>
-                  </TableCell>
+                <p>On order  : <Badge color="success">{this.state.orderamount}</Badge></p>
+                <p>On stock : <Badge color="warning"> {this.state.qtyonstock}</Badge></p>
+              </Col>
+              <Col>
+                <TextField
+                  type="number"
+                  name={this.state.name}
+                  id={this.state.name}
+                  defaultValue={this.state.orderamount}
+                  min={0}
+                  max={this.state.orderamount + this.state.qtyonstock}
+                  variant="outlined"
+                  onChange={(event, newValue) =>
+                    this.updateItem(event, newValue)
+                  }
+                  onMouseUp={(event, value) => {
+                    this.defaultValue = this.state.orderamount;
+                  }}
+                  inputStyle={{ backgroundColor: "#F6F5F5" }}
+                />
+               <Badge color="info"><p>Price : {this.state.totalPrice}</p></Badge>  
+              </Col>
 
-                  <TableCell align="right">
-                 
-                      <Fab
-                        aria-label="Delete"
-                        className={this.fab}
-                        name="delBtn"
-                        id="delItemBtn"
-                        onClick={this.deleteItem}
-                      >
-                        <DeleteIcon />
-                      </Fab>
-                   
-                  </TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
-          </ListItem>
+              <Col  className="d-flex align-items-center">
+                <Fab
+               
+                  aria-label="Delete"
+                  className={this.fab}
+                  name="delBtn"
+                  id="delItemBtn"
+                  onClick={this.deleteItem}
+                >
+                  <DeleteIcon />
+                </Fab>
+              </Col>
+            </Row>
+          </ListGroupItem>
         </MuiThemeProvider>
       </div>
     );
