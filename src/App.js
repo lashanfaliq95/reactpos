@@ -19,7 +19,7 @@ class App extends Component {
         <div className="App">
           <Route
             exact
-            path="/login"
+            path="/(login|)"
             render={props => (
               <React.Fragment>
                 <Login url={this.state.url + "users/authenticate"} />
