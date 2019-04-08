@@ -42,9 +42,8 @@ class Orders extends Component {
     axios
       .get(url, { withCredentials: true })
       .then(res => {
-        this.setState({ orders: res.data });
         if (res.status === 200) {
-          console.log("Recived orders");
+          this.setState({ orders: res.data });
         }
       })
       .catch(err => {
@@ -56,8 +55,8 @@ class Orders extends Component {
       });
   };
 
+  //change the status value of the given order
   updateOrders = (orderid, status) => {
-    //change the status value of the given order
     const updatedOrders = this.state.orders.map(order => {
       if (order._id === orderid) {
         order.status = status;
@@ -66,11 +65,6 @@ class Orders extends Component {
     });
     this.setState({ orders: updatedOrders });
   };
-
-  componentDidMount() {
-    const url = this.props.url + "orders/getallorders";
-    this.getOrders(url);
-  }
 
   logout = () => {
     const url = this.props.url + "users/logout";
@@ -84,9 +78,6 @@ class Orders extends Component {
         }
       })
       .catch(err => {
-        if (err.response.status === 401) {
-          this.props.history.push("/login");
-        }
         console.log(err);
       });
   };
@@ -95,6 +86,11 @@ class Orders extends Component {
   handleChange = (event, value) => {
     this.setState({ tabNum: value });
   };
+
+  componentDidMount() {
+    const url = this.props.url + "orders/getallorders";
+    this.getOrders(url);
+  }
 
   render() {
     const value = this.state.tabNum;
@@ -129,6 +125,7 @@ class Orders extends Component {
                       key={i}
                       order={order}
                       updateOrders={this.updateOrders}
+                      url={this.props.url}
                     />
                   ))}
               </List>
@@ -144,6 +141,7 @@ class Orders extends Component {
                       key={i}
                       order={order}
                       updateOrders={this.updateOrders}
+                      url={this.props.url}
                     />
                   ))}
               </List>

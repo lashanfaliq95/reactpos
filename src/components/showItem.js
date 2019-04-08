@@ -1,8 +1,5 @@
 import React, { Component } from "react";
-import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import axios from "axios";
-import { ListItem } from "@material-ui/core";
-
 import { Row, ListGroupItem, Col, Badge } from "reactstrap";
 
 class showItems extends Component {
@@ -75,7 +72,7 @@ class showItems extends Component {
               <h1>{this.state.name} </h1>
             </Col>
 
-            <Col className  ="d-flex align-items-center">
+            <Col className="d-flex align-items-center">
               Unit Price:${this.state.price}
             </Col>
           </Row>

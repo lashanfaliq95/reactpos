@@ -3,24 +3,9 @@ import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import TextField from "material-ui/TextField";
 import axios from "axios";
 import DeleteIcon from "@material-ui/icons/Delete";
-import {
-  TableBody,
-  TableRow,
-  TableCell,
-  Table,
-  Fab,
-  ListItem
-} from "@material-ui/core";
+import { Fab } from "@material-ui/core";
 import { withRouter } from "react-router-dom";
-import {
-  ListGroup,
-  ListGroupItem,
-  ListGroupItemHeading,
-  ListGroupItemText,
-  Row,
-  Col,
-  Badge
-} from "reactstrap";
+import { ListGroupItem, Row, Col, Badge } from "reactstrap";
 class Item extends Component {
   constructor(props) {
     super(props);
@@ -35,6 +20,7 @@ class Item extends Component {
     };
   }
 
+  //check if the list contains the given item id
   containsItem = (itemid, list) => {
     let i;
     for (i = 0; i < list.length; i++) {
@@ -64,10 +50,10 @@ class Item extends Component {
     }
   }
 
+  //to display on hover
   toggleHover = () => {
     this.setState({ hover: !this.state.hover });
   };
-
   styles = theme => ({
     fab: {
       margin: theme.spacing.unit
@@ -119,7 +105,7 @@ class Item extends Component {
           this.props.history.push("/login");
         }
         if (err.response.status === 400) {
-          alert("Session has timedout please login again ");
+          alert("Please enter a correct order amount");
         }
         console.log(err);
       });
@@ -135,7 +121,6 @@ class Item extends Component {
         if (res.status === 200) {
           console.log("Item has been deleted succesfully");
           //remove the deleted item from the items array
-          console.log(res.data);
           const newItems = this.props.items.filter(
             item => res.data._id !== item.item._id
           );
@@ -184,15 +169,20 @@ class Item extends Component {
             style={linkStyle}
           >
             <Row>
-            <Col>
-            <h1> {this.state.name}</h1>
-              <br/>
-              <p>Unit Price:{this.state.price}</p>
+              <Col>
+                <h1> {this.state.name}</h1>
+                <br />
+                <p>Unit Price:{this.state.price}</p>
               </Col>
               <Col>
-
-                <p>On order  : <Badge color="success">{this.state.orderamount}</Badge></p>
-                <p>On stock : <Badge color="warning"> {this.state.qtyonstock}</Badge></p>
+                <p>
+                  On order :{" "}
+                  <Badge color="success">{this.state.orderamount}</Badge>
+                </p>
+                <p>
+                  On stock :{" "}
+                  <Badge color="warning"> {this.state.qtyonstock}</Badge>
+                </p>
               </Col>
               <Col>
                 <TextField
@@ -206,17 +196,18 @@ class Item extends Component {
                   onChange={(event, newValue) =>
                     this.updateItem(event, newValue)
                   }
-                  onMouseUp={(event, value) => {
+                  onMouseUp={() => {
                     this.defaultValue = this.state.orderamount;
                   }}
                   inputStyle={{ backgroundColor: "#F6F5F5" }}
                 />
-               <Badge color="info"><p>Price : {this.state.totalPrice}</p></Badge>  
+                <Badge color="info">
+                  <p>Price : {this.state.totalPrice}</p>
+                </Badge>
               </Col>
 
-              <Col  className="d-flex align-items-center">
+              <Col className="d-flex align-items-center">
                 <Fab
-               
                   aria-label="Delete"
                   className={this.fab}
                   name="delBtn"

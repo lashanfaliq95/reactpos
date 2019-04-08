@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
-import { List, AppBar } from "material-ui";
+import { AppBar } from "material-ui";
 import axios from "axios";
 import { SettingsBackupRestore, AccountCircle } from "@material-ui/icons";
 import Item from "./Item";
@@ -8,16 +8,7 @@ import ShowItem from "./showItem";
 import { withRouter } from "react-router-dom";
 import { Toolbar, IconButton } from "@material-ui/core";
 import { Container } from "reactstrap";
-import {
-  ListGroup,
-  ListGroupItem,
-  ListGroupItemHeading,
-  ListGroupItemText,
-  Badge,
-  Popover,
-  PopoverHeader,
-  PopoverBody
-} from "reactstrap";
+import { ListGroup, Badge, Popover, PopoverHeader } from "reactstrap";
 
 class OrderDetails extends Component {
   constructor(props) {
@@ -39,13 +30,11 @@ class OrderDetails extends Component {
     });
   };
 
+  //get al available items
   getAllItems = () => {
     axios
-      .get("http://localhost:3000/items/getallitems", { withCredentials: true })
+      .get(this.props.url + "items/getallitems", { withCredentials: true })
       .then(res => {
-       const allItems = res.data.filter(
-          item => this.containsItem(item._id, this.state.items) === -1
-        );
         let allItemsNew = [];
 
         //find which items are already in order
@@ -55,8 +44,11 @@ class OrderDetails extends Component {
             if (item._id === addedItem.item._id) {
               added = true;
             }
+            return addedItem;
           });
           allItemsNew.push({ item: item, added: added });
+          return item;
+          
         });
 
         this.setState({
@@ -80,17 +72,16 @@ class OrderDetails extends Component {
       });
   };
 
+  //get items of the order
   getItems = url => {
     axios
       .get(url, { withCredentials: true })
       .then(res => {
-        this.setState({
-          items: res.data.items,
-          totalPrice: this.getPrice(res.data.items)
-        });
-
         if (res.status === 200) {
-          console.log("Succesfully received items");
+          this.setState({
+            items: res.data.items,
+            totalPrice: this.getPrice(res.data.items)
+          });
         } else {
           console.log("Items not found");
         }
@@ -123,7 +114,7 @@ class OrderDetails extends Component {
   };
 
   logout = () => {
-    axios("http://localhost:3000/users/logout", {
+    axios(this.props.url + "users/logout", {
       method: "post",
       withCredentials: true
     })
@@ -146,8 +137,8 @@ class OrderDetails extends Component {
     this.setState({ items: newItems });
   };
 
+  //remove the item added to items from all items
   handlerAllItems = itemId => {
-    //remove the item added to items from all items
     const allItems = this.state.allItems.map(item => {
       if (itemId === item.item._id) {
         item.added = true;
@@ -157,6 +148,7 @@ class OrderDetails extends Component {
     this.setState({ allItems: allItems });
   };
 
+  //update the field added of the allitems array when an item is added or removed from the order
   pushAllItems = itemId => {
     const allItems = this.state.allItems.map(item => {
       if (itemId === item.item._id) {
@@ -172,6 +164,7 @@ class OrderDetails extends Component {
     this.setState({ totalPrice: price });
   };
 
+  //check if the list contain the given item id
   containsItem = (itemid, list) => {
     let i;
     for (i = 0; i < list.length; i++) {
