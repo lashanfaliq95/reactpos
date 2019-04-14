@@ -2,10 +2,19 @@ import React, { Component } from "react";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import TextField from "material-ui/TextField";
 import axios from "axios";
-import DeleteIcon from "@material-ui/icons/Delete";
-import { Fab } from "@material-ui/core";
+import Close from "@material-ui/icons/Close";
+import { InputAdornment } from "@material-ui/core";
 import { withRouter } from "react-router-dom";
-import { ListGroupItem, Row, Col, Badge } from "reactstrap";
+import {
+  ListGroupItem,
+  Row,
+  Col,
+  Badge,
+  Button,
+  InputGroup,
+  InputGroupAddon,
+  Input
+} from "reactstrap";
 import { URL } from "../resources/variables";
 import { connect } from "react-redux";
 import {
@@ -41,7 +50,6 @@ class Item extends Component {
   //update the item state when props update
   componentDidUpdate(prevProps) {
     if (this.props.item.item._id !== prevProps.item.item._id) {
-     
       this.setState({
         id: this.props.item.item._id,
         name: this.props.item.item.name,
@@ -54,7 +62,6 @@ class Item extends Component {
       prevProps.orderItems !== this.props.orderItems &&
       prevProps.allItems === this.props.allItems
     ) {
-    
       this.setState({
         qtyonstock: this.props.item.item.qtyonstock,
         orderamount: this.props.item.orderamount,
@@ -78,7 +85,7 @@ class Item extends Component {
 
   //update item quantity
   updateItem = (event, number) => {
-    const newNum = number - this.state.orderamount;
+    const newNum = event.target.value - this.state.orderamount;
     this.updateItems(newNum);
   };
 
@@ -109,8 +116,8 @@ class Item extends Component {
     }
 
     return (
-      <div>
-        <MuiThemeProvider>
+      <tr>
+        {/* <MuiThemeProvider>
           <ListGroupItem
             onMouseEnter={this.toggleHover}
             onMouseLeave={this.toggleHover}
@@ -118,7 +125,7 @@ class Item extends Component {
           >
             <Row>
               <Col>
-                <h1> {this.state.name}</h1>
+                <h3> {this.state.name}</h3>
                 <br />
                 <p>Unit Price:{this.state.price}</p>
               </Col>
@@ -164,8 +171,30 @@ class Item extends Component {
               </Col>
             </Row>
           </ListGroupItem>
-        </MuiThemeProvider>
-      </div>
+        </MuiThemeProvider> */}
+
+        <th scope="row">{this.state.name}</th>
+        <td>{this.state.price}</td>
+        <td> {this.state.qtyonstock}</td>
+        <td>
+          <InputGroup>
+            <Input
+              name={this.state.name}
+              placeholder="Amount"
+              min={0}
+              value={this.state.orderamount}
+              max={this.state.orderamount + this.state.qtyonstock}
+              onChange={(event, newValue) => this.updateItem(event, newValue)}
+              type="number"
+              step="1"
+            />
+          </InputGroup>
+        </td>
+        <td>Rs.{this.state.totalPrice}</td>
+        <td>
+          <Button close onClick={this.deleteItem} />
+        </td>
+      </tr>
     );
   }
 }

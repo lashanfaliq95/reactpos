@@ -11,9 +11,14 @@ import {
   Badge,
   Popover,
   PopoverHeader,
-  Container
+  Container,
+  Table
 } from "reactstrap";
-import { getOrderItems, deleteOrderItems } from "../actions/item-action";
+import {
+  getOrderItems,
+  deleteOrderItems,
+  deleteAllItems
+} from "../actions/item-action";
 import { logoutUserPOST, resetStore } from "../actions/user-actions";
 
 import { connect } from "react-redux";
@@ -54,6 +59,31 @@ class OrderDetails extends Component {
   }
 
   render() {
+    let tableBody, totalPrice;
+    if (this.props.orderItems.length === 0) {
+      tableBody = (
+        <tr>
+          <td>No Items On Order</td>
+        </tr>
+      );
+      totalPrice = "";
+    } else {
+      tableBody = this.props.orderItems.map((item, i) => (
+        <Item key={i} orderId={this.state.id} item={item} />
+      ));
+      totalPrice = 
+        <Badge
+          color="primary"
+          style={{
+            float: "right"
+          }}
+        
+        >
+          {" "}
+          <h1>Total Price : Rs.{this.props.totalPrice} </h1>
+        </Badge>
+      
+    }
     return (
       <MuiThemeProvider>
         <div>
@@ -65,6 +95,7 @@ class OrderDetails extends Component {
               aria-label="Logout"
               onClick={() => {
                 this.props.deleteOrderItems();
+                this.props.deleteAllItems();
                 this.props.history.push("../orders");
               }}
             >
@@ -89,16 +120,27 @@ class OrderDetails extends Component {
               width: "70%"
             }}
           >
-            <div>
-              <ListGroup>
-                {this.props.orderItems.map((item, i) => (
-                  <Item key={i} orderId={this.state.id} item={item} />
-                ))}
-              </ListGroup>
-              <Badge color="primary">
-                {" "}
-                <h1>Total Price : ${this.props.totalPrice} </h1>
-              </Badge>
+            <div >
+              <h1 style={{
+                textAlign:"center",
+                padding:10,
+               
+              }}>Order Items</h1>
+
+              <Table hover>
+                <thead>
+                  <tr>
+                    <th>Item Name</th>
+                    <th>Unit Price</th>
+                    <th>Amount On Stock</th>
+                    <th>Amount On Order</th>
+                    <th>Price</th>
+                    <th />
+                  </tr>
+                </thead>
+                <tbody>{tableBody}</tbody>
+              </Table>
+          {totalPrice}
             </div>
           </Container>
           <Container
@@ -109,9 +151,16 @@ class OrderDetails extends Component {
               padding: 20
             }}
           >
-            <h1>Item List</h1>
+            <h1 style={{
+                textAlign:"center"
+              }}>Item List</h1>
 
-            <ListGroup>
+            <ListGroup
+              style={{
+                overflowY: "scroll",
+                maxHeight: 800
+              }}
+            >
               {this.props.allItems.map((item, i) => (
                 <ShowItem key={i} item={item} orderId={this.state.id} />
               ))}
@@ -126,6 +175,7 @@ class OrderDetails extends Component {
 const mapActionsToProps = {
   getItems: getOrderItems,
   deleteOrderItems: deleteOrderItems,
+  deleteAllItems: deleteAllItems,
   onLogoutUser: logoutUserPOST,
   resetStore: resetStore
 };

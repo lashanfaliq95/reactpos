@@ -9,6 +9,8 @@ export const DELETE_ORDER_ITEM = "items:deleteOrderItem";
 export const ADD_ORDER_ITEM = "items:addOrderItem";
 export const ADD_ALL_ITEM = "items:addAllItem";
 export const DELETE_ALL_ITEM = "items:deleteAllItem";
+export const DELETE_ALL_ITEMS = "items:deleteAllItems";
+
 
 export function updateItems(newItems) {
   return {
@@ -84,6 +86,15 @@ export function deleteAllItem(itemID) {
     type: DELETE_ALL_ITEM,
     payload: {
       itemID: itemID
+    }
+  };
+}
+
+export function deleteAllItems() {
+  return {
+    type: DELETE_ALL_ITEMS,
+    payload: {
+     items:[]
     }
   };
 }
@@ -164,8 +175,9 @@ export function deleteOrderItemPUT(orderId, itemId) {
       .then(res => {
         if (res.status === 200) {
           dispatch(deleteOrderItem(res.data));
-          dispatch(updateOrderPrice());
+
           dispatch(addAllItem(res.data));
+          dispatch(updateOrderPrice());
         }
       })
       .catch(err => {

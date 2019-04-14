@@ -5,6 +5,7 @@ import {
   DELETE_ORDER_ITEM,
   DELETE_ALL_ITEM,
   ADD_ALL_ITEM,
+  DELETE_ALL_ITEMS,
   UPDATE_ORDER_ITEM_QTY,
   UPDATE_ORDER_PRICE
 } from "../actions/item-action";
@@ -55,6 +56,12 @@ export default function itemReducer(
         return item;
       });
       return { ...state, allItems: updatedItems };
+      case DELETE_ALL_ITEMS:
+      return {
+        ...state,
+        allItems: payload.items,
+        
+      };
     case UPDATE_ORDER_ITEM_QTY:
       updatedItems = state.orderItems.map(item => {
         if (item.item._id === payload.itemID) {

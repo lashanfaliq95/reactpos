@@ -26,7 +26,7 @@ class showItems extends Component {
   }
 
   addItems = () => {
- this.props.addItem(this.state.orderId,this.state.id)
+    this.props.addItem(this.state.orderId, this.state.id);
   };
 
   render() {
@@ -40,14 +40,21 @@ class showItems extends Component {
           }}
           disabled
           onClick={this.addItems}
+         
         >
           <Row>
             <Col>
-              <h1>{this.state.name} </h1>
+              <h3>{this.state.name} </h3>
             </Col>
 
-            <Col className="d-flex align-items-center">
-              Unit Price:${this.state.price}
+            <Col >
+            <p
+                style={{
+                  float: "right"
+                }}
+              >
+                Rs.{this.state.price}
+              </p>
             </Col>
           </Row>
         </ListGroupItem>
@@ -63,10 +70,16 @@ class showItems extends Component {
         >
           <Row>
             <Col>
-              <h1>{this.state.name} </h1>
+              <h3>{this.state.name} </h3>
             </Col>
-            <Col className="d-flex align-items-center">
-              Unit Price:$<Badge color="danger">{this.state.price}</Badge>
+            <Col>
+              <p
+                style={{
+                  float: "right"
+                }}
+              >
+                Rs.{this.state.price}
+              </p>
             </Col>
           </Row>
         </ListGroupItem>
@@ -83,11 +96,9 @@ const mapActionsToProps = {
 const mapStateToProps = (state, props) => ({
   item: props.item,
   orderId: props.orderId
-
 });
 
-export default
-  connect(
-    mapStateToProps,
-    mapActionsToProps
-  ) (showItems);
+export default connect(
+  mapStateToProps,
+  mapActionsToProps
+)(showItems);
