@@ -1,1 +1,1 @@
-export const URL='  https://posbakcend.herokuapp.com/';
+export const URL='https://posbakcend.herokuapp.com/';
