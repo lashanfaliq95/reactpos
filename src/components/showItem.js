@@ -10,6 +10,7 @@ class showItems extends Component {
       id: this.props.item.item._id,
       name: this.props.item.item.name,
       price: this.props.item.item.price,
+      qtyonstock: this.props.item.item.qtyonstock,
       orderId: this.props.orderId
     };
   }
@@ -20,7 +21,8 @@ class showItems extends Component {
       this.setState({
         id: this.props.item.item._id,
         name: this.props.item.item.name,
-        price: this.props.item.item.price
+        price: this.props.item.item.price,
+        qtyonstock: this.props.item.item.qtyonstock
       });
     }
   }
@@ -30,8 +32,13 @@ class showItems extends Component {
   };
 
   render() {
-    let ListItem;
-    if (this.props.item.added) {
+    let ListItem, badge;
+    if (this.props.item.added) badge = <Badge color="success">Added</Badge>;
+    if (this.props.item.item.qtyonstock <= 0)
+      badge = <Badge color="warning">Out Of Stock</Badge>;
+
+    console.log(this.state.qtyonstock);
+    if (this.props.item.added || this.props.item.item.qtyonstock <= 0) {
       ListItem = (
         <ListGroupItem
           name={this.state.name}
@@ -40,20 +47,20 @@ class showItems extends Component {
           }}
           disabled
           onClick={this.addItems}
-         
         >
           <Row>
             <Col>
               <h3>{this.state.name} </h3>
             </Col>
-
-            <Col >
-            <p
+            
+            <Col>
+              <p
                 style={{
                   float: "right"
                 }}
               >
-                Rs.{this.state.price}
+                Rs.{this.state.price}<br/>
+                {badge}
               </p>
             </Col>
           </Row>
