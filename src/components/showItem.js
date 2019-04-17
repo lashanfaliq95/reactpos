@@ -10,7 +10,6 @@ class showItems extends Component {
       id: this.props.item.item._id,
       name: this.props.item.item.name,
       price: this.props.item.item.price,
-      qtyonstock: this.props.item.item.qtyonstock,
       orderId: this.props.orderId
     };
   }
@@ -37,7 +36,6 @@ class showItems extends Component {
     if (this.props.item.item.qtyonstock <= 0)
       badge = <Badge color="warning">Out Of Stock</Badge>;
 
-    console.log(this.state.qtyonstock);
     if (this.props.item.added || this.props.item.item.qtyonstock <= 0) {
       ListItem = (
         <ListGroupItem
