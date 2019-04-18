@@ -7,14 +7,15 @@ import {
   ADD_ALL_ITEM,
   DELETE_ALL_ITEMS,
   UPDATE_ORDER_ITEM_QTY,
-  UPDATE_ORDER_PRICE
+  UPDATE_ORDER_PRICE,
+  UPDATE_ORDER_PRICE_ON_ITEM_ADD
 } from "../actions/item-action";
 
 export default function itemReducer(
   state = { allItems: [], orderItems: [], orderPrice: 0 },
   { type, payload }
 ) {
-  let updatedItems;
+  let updatedItems; 
 
   switch (type) {
     case UPDATE_ITEMS:
@@ -29,6 +30,9 @@ export default function itemReducer(
       });
 
       return { ...state, orderPrice: totalPrice };
+    case UPDATE_ORDER_PRICE_ON_ITEM_ADD:
+      const newPrice = state.orderPrice + payload.price;
+      return { ...state, orderPrice: newPrice };
     case DELETE_ORDER_ITEMS:
       return {
         ...state,
@@ -56,13 +60,13 @@ export default function itemReducer(
         return item;
       });
       return { ...state, allItems: updatedItems };
-      case DELETE_ALL_ITEMS:
+    case DELETE_ALL_ITEMS:
       return {
         ...state,
-        allItems: payload.items,
-        
+        allItems: payload.items
       };
     case UPDATE_ORDER_ITEM_QTY:
+    console.log('test')
       updatedItems = state.orderItems.map(item => {
         if (item.item._id === payload.itemID) {
           item.orderamount = payload.orderamount;

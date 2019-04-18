@@ -94,27 +94,12 @@ class Item extends Component {
   };
 
   deleteItem = () => {
+   
     this.props.deleteItem(this.state.orderId, this.state.id);
+   
   };
 
   render() {
-    var linkStyle;
-    if (this.state.hover) {
-      linkStyle = {
-        backgroundColor: "#ddd",
-        margin: 15,
-        padding: 20,
-        cursor: "pointer"
-      };
-    } else {
-      linkStyle = {
-        backgroundColor: "#eee",
-        margin: 15,
-        padding: 20,
-        cursor: "pointer"
-      };
-    }
-
     return (
       <tr>
         {/* <MuiThemeProvider>

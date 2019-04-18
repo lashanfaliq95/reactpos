@@ -104,7 +104,9 @@ class Order extends Component {
                   </TableCell>
 
                   <TableCell>
+                  <Link to={`/orderDetails/${this.state.id}`}>
                     <h1>{this.state.status}</h1>
+                    </Link>
                   </TableCell>
 
                   <TableCell>

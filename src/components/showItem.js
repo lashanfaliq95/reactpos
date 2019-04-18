@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Row, ListGroupItem, Col, Badge } from "reactstrap";
 import { connect } from "react-redux";
-import { addOrderItemPUT } from "../actions/item-action";
+import { addOrderItemPUT,  } from "../actions/item-action";
 
 class showItems extends Component {
   constructor(props) {
@@ -10,6 +10,7 @@ class showItems extends Component {
       id: this.props.item.item._id,
       name: this.props.item.item.name,
       price: this.props.item.item.price,
+      qtyonstock:this.props.item.item.qtyonstock,
       orderId: this.props.orderId
     };
   }
@@ -27,14 +28,19 @@ class showItems extends Component {
   }
 
   addItems = () => {
-    this.props.addItem(this.state.orderId, this.state.id);
+    this.props.addItem(this.state.orderId, this.state.id,this.state.price,this.props.item.item.qtyonstock);
+ 
+  
   };
 
   render() {
     let ListItem, badge;
-    if (this.props.item.added) badge = <Badge color="success">Added</Badge>;
-    if (this.props.item.item.qtyonstock <= 0)
-      badge = <Badge color="warning">Out Of Stock</Badge>;
+   
+    if (this.props.item.added) {
+      badge = <Badge color="success">Already On Order</Badge>;
+    }
+   else if (this.props.item.item.qtyonstock <= 0){
+      badge = <Badge color="warning">Out Of Stock</Badge>;}
 
     if (this.props.item.added || this.props.item.item.qtyonstock <= 0) {
       ListItem = (
@@ -50,14 +56,15 @@ class showItems extends Component {
             <Col>
               <h3>{this.state.name} </h3>
             </Col>
-            
+
             <Col>
               <p
                 style={{
                   float: "right"
                 }}
               >
-                Rs.{this.state.price}<br/>
+                Rs.{this.state.price}
+                <br />
                 {badge}
               </p>
             </Col>
@@ -96,7 +103,9 @@ class showItems extends Component {
 }
 
 const mapActionsToProps = {
-  addItem: addOrderItemPUT
+  addItem: addOrderItemPUT,
+  
+
 };
 const mapStateToProps = (state, props) => ({
   item: props.item,

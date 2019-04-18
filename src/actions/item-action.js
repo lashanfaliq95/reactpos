@@ -10,7 +10,7 @@ export const ADD_ORDER_ITEM = "items:addOrderItem";
 export const ADD_ALL_ITEM = "items:addAllItem";
 export const DELETE_ALL_ITEM = "items:deleteAllItem";
 export const DELETE_ALL_ITEMS = "items:deleteAllItems";
-
+export const UPDATE_ORDER_PRICE_ON_ITEM_ADD = "items:updateOrderPriceOnItemAdd";
 
 export function updateItems(newItems) {
   return {
@@ -33,6 +33,15 @@ export function updateOrderItems(newItems) {
 export function updateOrderPrice() {
   return {
     type: UPDATE_ORDER_PRICE
+  };
+}
+
+export function updatePriceOnAddItem(price) {
+  return {
+    type: UPDATE_ORDER_PRICE_ON_ITEM_ADD,
+    payload: {
+      price: price
+    }
   };
 }
 
@@ -94,7 +103,7 @@ export function deleteAllItems() {
   return {
     type: DELETE_ALL_ITEMS,
     payload: {
-     items:[]
+      items: []
     }
   };
 }
@@ -174,8 +183,9 @@ export function deleteOrderItemPUT(orderId, itemId) {
     })
       .then(res => {
         if (res.status === 200) {
+         // dispatch(updateOrderItemQty(itemId, 0, newQty));
           dispatch(deleteOrderItem(res.data));
-
+         
           dispatch(addAllItem(res.data));
           dispatch(updateOrderPrice());
         }
@@ -190,7 +200,7 @@ export function deleteOrderItemPUT(orderId, itemId) {
   };
 }
 
-export function addOrderItemPUT(orderId, itemId) {
+export function addOrderItemPUT(orderId, itemId, price, qtyonstock) {
   return dispatch => {
     const url = URL + "orders/addorderitems/" + orderId + "/" + itemId;
 
@@ -202,6 +212,8 @@ export function addOrderItemPUT(orderId, itemId) {
         if (res.status === 200) {
           dispatch(updateOrderItems(res.data.items));
           dispatch(deleteAllItem(itemId));
+          dispatch(updatePriceOnAddItem(price));
+        //  dispatch(updateOrderItemQty(itemId, 1, qtyonstock-1));
         }
       })
       .catch(err => {
